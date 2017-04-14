@@ -20,8 +20,9 @@ for i in path.host:
     print("ESXi FQDN: ",i.name)
     print("Power Management: ", i.hardware.cpuPowerManagementInfo.currentPolicy, '\n')
 
+# Change the Power Management of the Hosts to Low Power: 3
 
-
+    i.configManager.powerSystem.ConfigurePowerPolicy(3)
 
 atexit.register(Disconnect,vc)
 
