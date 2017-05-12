@@ -2,9 +2,6 @@ from pyVim.connect import SmartConnect, Disconnect
 from pyVmomi import Cache
 import ssl
 import atexit
-# import the VSAN API python bindings
-
-#import the vSAN API python bindings
 
 import vsanmgmtObjects
 import vsanapiutils
@@ -29,11 +26,22 @@ dc = sc.content.rootFolder.childEntity[0]
 
 hosts = sc.content.rootFolder.childEntity[0].hostFolder.childEntity[0].host
 
-for h in  hosts:
+print(hosts)
+print(hosts[0])
 
-    print(h.name)
-    print(h.configManager.advancedOption.setting)
+print(hosts[0].configManager.advancedOption)
 
+setting = hosts[0].configManager.advancedOption.setting
+
+# setting is type array
+
+# Loop over all the settings and look for vSAN CLomd Repair Time
+
+for i in setting:
+
+    if i.key == "VSAN.ClomRepairDelay":
+
+        print(i)
 
 
 
