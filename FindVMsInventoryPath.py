@@ -6,15 +6,29 @@ s.verify_mode = ssl.CERT_NONE
 
 # connection string
 
-si = SmartConnect(host="10.27.44.44", user="Administrator@vsphere.local", pwd='VMware123!', sslContext=s)
+si = SmartConnect(host="vcsa-gssvsan-b.csl.vmware.com", user="Administrator@vsphere.local", pwd='VMware123!', sslContext=s)
 
 datacenter = si.content.rootFolder.childEntity[0]
 
-vm = si.content.searchIndex.FindByInventoryPath("/")
+root= si.content.rootFolder.childEntity[0]
+#print(root)
 
-print(vm)
 
-vms = datacenter.vmFolder.childEntity
+
+# loop de todos os child entities e depois ponho dentro dos earch index
+# returns all the vm names in the Inventory
+dc = si.content.rootFolder.childEntity[0]
+
+for vms in dc.vmFolder.childEntity:
+
+    #print(vms.name)
+    vm = si.content.searchIndex.FindByInventoryPath("GSS-VSAN-B/vm/"+vms.name)
+    # Root Folder must not be used
+    print(vm.name)
+
+
+
+
 
 
 
