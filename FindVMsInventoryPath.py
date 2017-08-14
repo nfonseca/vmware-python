@@ -23,7 +23,7 @@ for vms in dc.vmFolder.childEntity:
 
     #print(vms.name)
     vm = si.content.searchIndex.FindByInventoryPath("GSS-VSAN-B/vm/"+vms.name)
-    # Root Folder must not be usedv
+    # Root Folder must not be usedvs
     print(vm.name)
 
 
