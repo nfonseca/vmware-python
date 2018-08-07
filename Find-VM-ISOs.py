@@ -11,7 +11,6 @@ from datetime import datetime
 s = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 s.verify_mode = ssl.CERT_NONE
 
-
 # variables
 
 
@@ -19,20 +18,15 @@ s.verify_mode = ssl.CERT_NONE
 
 si = connect.SmartConnect(host="192.168.10.10", user="Administrator@vsphere.local", pwd='VMware123$', sslContext=s)
 
+content = si.RetrieveServiceContent()
 
-
-
-dcs = si.content.rootFolder.childEntity
-
-# loop over all Datacenters and retrieve all VM's
-for dc in dcs:
-
-    print(dc.name)
-
-    for vms in dc.vmFolder.childEntity:
-
-        for folder in vms:
-
-            print(folder.childEntity)
-        #vm = si.content.searchIndex.FindByInventoryPath(dc.name+"/vm/"+vms+"/"+vms.name)
-        #print("Datacenter:"+dc.name+ " " +"VM:"+ vm.name)
+for child in content.rootFolder.childEntity:
+    datacenter = child
+    vmFolder = datacenter.vmFolder
+    vmList = vmFolder.childEntity
+    for vm in vmList:
+        #        print(vm.name)
+        #        print(vm.childEntity)
+        name = vm.childEntity
+        for x in name:
+            print(x.name)
