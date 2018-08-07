@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-# we use sys.path to add the location of the extra modules required
+import sys
+import ssl
 
 sys.path.append("/usr/lib/vmware-marvin/marvind/webapps/ROOT/WEB-INF/classes/scripts/lib/python2.7/site-packages")
 from pyVmomi import vim, vmodl
@@ -10,9 +11,13 @@ from datetime import datetime
 s = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 s.verify_mode = ssl.CERT_NONE
 
+
+# variables
+
+
 # connection string
 
-si = SmartConnect(host="vcsa-gssvsan-b.csl.vmware.com", user="Administrator@vsphere.local", pwd='VMware123!', sslContext=s)
+si = connect.SmartConnect(host="192.168.10.10", user="Administrator@vsphere.local", pwd='VMware123$', sslContext=s)
 
 
 
@@ -26,5 +31,8 @@ for dc in dcs:
 
     for vms in dc.vmFolder.childEntity:
 
-        vm = si.content.searchIndex.FindByInventoryPath(dc.name+"/vm/"+vms.name)
-        print("Datacenter:"+dc.name+ " " +"VM:"+ vm.name)
+        for folder in vms:
+
+            print(folder.childEntity)
+        #vm = si.content.searchIndex.FindByInventoryPath(dc.name+"/vm/"+vms+"/"+vms.name)
+        #print("Datacenter:"+dc.name+ " " +"VM:"+ vm.name)
