@@ -40,10 +40,47 @@ print(containerVM)
 print(containerVM.type)
 
 
-traversal = vmodl.query.PropertyCollector.TraversalSpec(name='rpToVm', type=vim.ResourcePool, path="vm",skip=False)
+traversal = vmodl.query.PropertyCollector.TraversalSpec(name='VMs', type=vim.VirtualMachine, path="vm",skip=False)
 print(traversal)
 
-#filter = si.content.propertyCollector.CreateFilter()
+#object_spec = vmodl.query.PropertyCollector.ObjectSpec(containerVM,traversal,True)
+
+
+#spec = vmodl.query.PropertyCollector.FilterSpec(containerVM,traversal,True)
+
+
+#filter = si.content.propertyCollector.CreateFilter(spec,partialUpdates)
+
+
+
+# data object for the filter
+
+data = vmodl.query.PropertyCollector.ObjectSpec()
+
+#populate
+
+data.obj =containerVM
+data.selectSet = []
+data.skip=True
+
+
+
+# start populating the instantiated object
+
+data_object_filter=vmodl.query.PropertyCollector.PropertySpec()
+data_object_filter.type=vim.VirtualMachine
+data_object_filter.all= True
+data_object_filter.pathSet = []
+
+print(data_object_filter)
+
+#propertyFilter.propSet =  data_object_filter
+
+#propertyFilter.objectSet = []
+
+
+# instance an empty object for the Filter Spec
+#propertyFilter = vmodl.query.PropertyCollector.FilterSpec()
 
 
 for obj in containerVM.view:
