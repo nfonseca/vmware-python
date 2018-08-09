@@ -45,5 +45,6 @@ print(traversal)
 
 #filter = si.content.propertyCollector.CreateFilter()
 
+
 for obj in containerVM.view:
         print(obj.name)
