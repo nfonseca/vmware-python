@@ -40,5 +40,10 @@ print(containerVM)
 print(containerVM.type)
 
 
+traversal = vmodl.query.PropertyCollector.TraversalSpec(name='rpToVm', type=vim.ResourcePool, path="vm",skip=False)
+print(traversal)
+
+#filter = si.content.propertyCollector.CreateFilter()
+
 for obj in containerVM.view:
         print(obj.name)
