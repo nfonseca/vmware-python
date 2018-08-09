@@ -32,27 +32,13 @@ print(rootFolder.name)
 
 #view = si.content.viewManager.CreateContainerView(rootFolder,True)
 
-container = content.viewManager.CreateContainerView(content.rootFolder,[],False)
+container = content.viewManager.CreateContainerView(content.rootFolder,[],True)
+containerVM = content.viewManager.CreateContainerView(content.rootFolder,[vim.VirtualMachine],True)
 
 print(container)
+print(containerVM)
+print(containerVM.type)
 
 
-# Create a global view
-#
-# def get_obj(content, vimtype, name):
-#     obj = None
-#     container = content.viewManager.CreateContainerView(
-#         content.rootFolder, vimtype, True)
-#     for c in container.view:
-#         if c.name == name:
-#             obj = c
-#             break
-#     return obj
-
-
-# specs of the script
-# 1 - connect to VC
-# 2 - Find all Powered ON VMs on the DataCenter (VxRail CLusters Only)
-# 3 - Check for every of those VMs if they have an ISO Mounted
-# 4 - Report to the user a list of the VMs Found (we can eventually modify the script to remove the ISO)
-
+for obj in containerVM.view:
+        print(obj.name)
