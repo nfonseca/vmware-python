@@ -46,7 +46,7 @@ def has_iso(virtual_machine):
         if isinstance(devices,vim.vm.device.VirtualCdrom) and devices.connectable.connected is True :
                 print(virtual_machine.config.name)
                 print(devices.backing)
-
+                print_vm_info(virtual_machine)
 
 def main():
     """
@@ -84,7 +84,6 @@ def main():
 
         children = containerView.view
         for child in children:
-#            print_vm_info(child)
             has_iso(child)
 
     except vmodl.MethodFault as error:
@@ -96,3 +95,4 @@ def main():
 # Start program
 if __name__ == "__main__":
     main()
+
