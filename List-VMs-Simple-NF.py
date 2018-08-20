@@ -43,7 +43,8 @@ def has_iso(virtual_machine):
     iso_path = virtual_machine.config.hardware.device
 
     for devices in  iso_path:
-        if isinstance(devices,vim.vm.device.VirtualCdrom):
+        if isinstance(devices,vim.vm.device.VirtualCdrom) and devices.connectable.connected is True :
+                print(virtual_machine.config.name)
                 print(devices.backing)
 
 
