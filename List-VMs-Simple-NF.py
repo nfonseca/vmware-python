@@ -44,9 +44,11 @@ def has_iso(virtual_machine):
 
     for devices in  iso_path:
         if isinstance(devices,vim.vm.device.VirtualCdrom) and devices.connectable.connected is True :
-                print(virtual_machine.config.name)
+                print("===>"+"VM Name: "+virtual_machine.config.name)
+                print("===>"+"VM Details")
                 print(devices.backing)
                 print_vm_info(virtual_machine)
+                print('\n')
 
 def main():
     """
@@ -95,4 +97,5 @@ def main():
 # Start program
 if __name__ == "__main__":
     main()
+
 
