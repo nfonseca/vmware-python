@@ -17,7 +17,7 @@ def GetArgs():
    """
 
    parser = argparse.ArgumentParser(description='Process args for connecting to vCenter')
-   parser.add_argument('-v', '--vc', required=True, action='store', help='vCenter IP to connect to')
+   parser.add_argument('-v', '--vc', required=True, action='store', help='vCenter')
    parser.add_argument('-u', '--user', required=True, action='store', help='vCenter Administrator')
    parser.add_argument('-p', '--password', required=False, action='store', help='Password')
    args = parser.parse_args()
