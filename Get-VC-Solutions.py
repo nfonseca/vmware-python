@@ -67,7 +67,26 @@ def main():
             print("In loop")
             print(child.extensionList) # go through all the children attributes on the list
 
+
+
 # need to find a way to selectively collect only the properties I am interested in . Property Collector ?!?!?!?!?
+
+            objSpec = vmodl.Query.PropertyCollector.ObjectSpec(
+                obj=extview,
+                skip=False,
+                selectSet=[])
+
+            print(objSpec)
+
+            propSpec = vmodl.Query.PropertyCollector.PropertySpec(
+                type=vim.VirtualMachine,
+                all=False,
+                pathSet=["company"])
+
+            filterSpec = vmodl.Query.PropertyCollector.FilterSpec(
+                propSet=[propSpec],
+                objectSet=[objSpec])
+
 
 
 
