@@ -59,15 +59,15 @@ def main():
         extmanager = si.content.extensionManager
         print("Type of extmanager is: ")
         print(type(extmanager))
-        extview = si.content.viewManager.CreateListView([extmanager])
+        extview = si.content.viewManager.CreateListView([extmanager]) # create a ListView where obj is Extension Manager
         print(extview)
 
-        children = extview.view
+        children = extview.view #assigne the property view to a new variable (object ?)
         for child in children:
             print("In loop")
-            print(child.extensionList)
+            print(child.extensionList) # go through all the children attributes on the list
 
-
+# need to find a way to selectively collect only the properties I am interested in . Property Collector ?!?!?!?!?
 
 
 
