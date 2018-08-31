@@ -59,8 +59,13 @@ def main():
         extmanager = si.content.extensionManager
         print("Type of extmanager is: ")
         print(type(extmanager))
-        view = si.content.viewManager.CreateListView([extmanager])
-        print(view)
+        extview = si.content.viewManager.CreateListView([extmanager])
+        print(extview)
+
+        children = extview.view
+        for child in children:
+            print("In loop")
+            print(child.extensionList)
 
 
 
