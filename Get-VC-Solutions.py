@@ -56,6 +56,8 @@ def main():
                                   sslContext=s)
 
 
+# STEP1: View Creation
+
         extmanager = si.content.extensionManager
         print("Type of extmanager is: ")
         print(type(extmanager))
@@ -68,24 +70,50 @@ def main():
             print(child.extensionList) # go through all the children attributes on the list
 
 
-
+# STEP2:  BUILDING THE FILTERSPEC
 # need to find a way to selectively collect only the properties I am interested in . Property Collector ?!?!?!?!?
 
-            objSpec = vmodl.Query.PropertyCollector.ObjectSpec(
+        # this seems implemented OK
+        objSpec = vmodl.Query.PropertyCollector.ObjectSpec(
                 obj=extview,
                 skip=False,
                 selectSet=[])
 
-            print(objSpec)
+        print(objSpec)
 
-            propSpec = vmodl.Query.PropertyCollector.PropertySpec(
-                type=vim.VirtualMachine,
+        propSpec = vmodl.Query.PropertyCollector.PropertySpec( #use vim.extensionManager
+                type=vim.extensionManager,
                 all=False,
                 pathSet=["company"])
 
-            filterSpec = vmodl.Query.PropertyCollector.FilterSpec(
+        print(propSpec)
+
+        filterSpec = vmodl.Query.PropertyCollector.FilterSpec(
                 propSet=[propSpec],
                 objectSet=[objSpec])
+
+        print("==>FilterSpec to be used")
+        print(filterSpec)
+
+            # creating the filter
+        print("==>Filter to be used")
+        task_filter = vmodl.query.PropertyCollector.Filter(filterSpec, True)
+        print(task_filter)
+
+
+# STEP3: Create a TraversalSpec
+
+        # Implementation seems OK
+        travType = vim.view.View
+        print(travType)
+        print(type(travType))
+        travSpec =  vmodl.query.PropertyCollector.TraversalSpec(
+                    path="company",
+                    skip=False,
+                    type=vim.view.View)
+
+        print("Printing travSpec.....")
+        print(travSpec)
 
 
 
