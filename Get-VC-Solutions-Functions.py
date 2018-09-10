@@ -78,7 +78,9 @@ def main():
 
         pc = si.content.propertyCollector
 
-        print(si)
+#       testing VC connection
+        vctime = si.CurrentTime()
+        print("vCenter Time: ", vctime.strftime("%Y-%m-%d %H:%M"))
 
 
 
