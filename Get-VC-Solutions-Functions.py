@@ -36,18 +36,19 @@ def get_obj(si):
 
 #Function to create the Filter Spec
 
-def create_filter_spec(pc):
+def create_filter_spec(si,pc):
     objSpecs = []
     extmanager = si.content.extensionManager
     extview = si.content.viewManager.CreateListView([extmanager])
-    for ext in extview:
+
+    for ext in extview.view:
         objSpec = vmodl.query.PropertyCollector.ObjectSpec(obj=ext)
         objSpecs.append(objSpec)
 
     filterSpec = vmodl.query.PropertyCollector.FilterSpec()
     filterSpec.objectSet = objSpecs
     propSet = vmodl.query.PropertyCollector.PropertySpec(all=False)
-    propSet.type = vim.VirtualMachine
+    propSet.type = vim.Extension
     propSet.pathSet = "company"
     filterSpec.propSet = [propSet]
     return filterSpec
@@ -83,13 +84,18 @@ def main():
         vctime = si.CurrentTime()
         print("vCenter Time: ", vctime.strftime("%Y-%m-%d %H:%M"))
 
+
         extensions = get_obj(si).view
         print(extensions)
         # 'vim.view.ListView:session[52d4057e-9e24-8619-7ec6-df8fff7948ed]5297b178-4d73-0423-f82c-504fe257616b'
 
-        # this prints me all extensions
+        # this prints me all the extensionList attributes of the view
         for i in extensions:
             print(i.extensionList)
+
+        test = create_filter_spec(si,pc)
+        print(test)
+
 
 
 
