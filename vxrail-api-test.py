@@ -3,8 +3,6 @@
 import sys
 from pyVmomi import vim, vmodl
 from pyVim import connect
-from datetime import datetime
-import ssl
 import requests
 import jsbeautifier
 
@@ -22,12 +20,10 @@ pprint = jsbeautifier.beautify(response.text)
 
 print(pprint)
 
-######################
-# VC Connection      #
-######################
+###########################
+# Establish VC Connection #
+###########################
 
-s = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-s.verify_mode = ssl.CERT_NONE
 si = connect.SmartConnectNoSSL(host='172.168.10.149', user='administrator@vsphere.local', pwd='VxR@il1!')
 
 print(si.serverClock)
@@ -38,12 +34,26 @@ print(si.serverClock)
 def isVxRailCluster():
     return None
 
-# need to loop over all registered clusters in the DC
-# and run a check
-# returns ?
-# true if  availableField[41].name='VxRail-VERSION'
+
+# function that searchs for all vxrail managaer Vms registered in DC and returns their IP
+# in order to pass as input for the loop to query the APIs.
+
+def findVxRM():
+    vxrmIPs = []
+
+    content = si.RetrieveServiceContent()
+    containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
+
+    for vm in containerVM.view:
+        if vm.name == 'VxRail Manager':
+            vxrmIPs.append(vm.name)
+
+    print(vxrmIPs)
+
+    return None
 
 
+findVxRM()
 # vxrm APIS
 
 # GET https://<VxM IP>/rest/vxm/v1/system
