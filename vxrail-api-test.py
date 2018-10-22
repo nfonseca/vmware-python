@@ -34,7 +34,6 @@ print(si.serverClock)
 def isVxRailCluster():
     return None
 
-
 # function that searchs for all vxrail managaer Vms registered in DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
 
@@ -46,7 +45,7 @@ def findVxRM():
 
     for vm in containerVM.view:
         if vm.name == 'VxRail Manager':
-            vxrmIPs.append(vm.name)
+            vxrmIPs.append(vm.summary.guest.ipAddress)
 
     print(vxrmIPs)
 
