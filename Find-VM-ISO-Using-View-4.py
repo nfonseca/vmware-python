@@ -56,7 +56,7 @@ selectSet = [])
 propSpec = vmodl.Query.PropertyCollector.PropertySpec(
 type = vim.VirtualMachine,
 all = False,
-pathSet = ["name"])
+        pathSet=["name", "guest"])
 
 filterSpec = vmodl.Query.PropertyCollector.FilterSpec(
 propSet = [propSpec],

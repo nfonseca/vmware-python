@@ -24,14 +24,14 @@ def GetArgs():
    return args
 
 
-# Function to create the View
+# Function to create the View for the extensions
 
 def get_obj(si):
 
     extmanager = si.content.extensionManager
     extview = si.content.viewManager.CreateListView([extmanager])
-#    extview.DestroyView()
-    return extview
+    view = extview.view
+    return view
 
 
 #Function to create the Filter Spec
@@ -40,11 +40,18 @@ def create_filter_spec(si,pc):
     objSpecs = []
     extmanager = si.content.extensionManager
     extview = si.content.viewManager.CreateListView([extmanager])
+    extension = extview
+    print(extview)
 
     for ext in extview.view:
+        print("ext.extensionList")
+        print(ext.extensionList)
         objSpec = vmodl.query.PropertyCollector.ObjectSpec(obj=ext)
         objSpecs.append(objSpec)
-
+        print("LALALA")
+        print(objSpecs)
+        print("LALALA")
+    print(objSpecs)
     filterSpec = vmodl.query.PropertyCollector.FilterSpec()
     filterSpec.objectSet = objSpecs
     propSet = vmodl.query.PropertyCollector.PropertySpec(all=False)
@@ -54,7 +61,12 @@ def create_filter_spec(si,pc):
     return filterSpec
 
 
-
+def filter_results(result):
+    vms = []
+    for o in result.objects:
+        if o.propSet[0].val == "company":
+            vms.append(o.obj)
+    return vms
 
 
 def main():
@@ -79,6 +91,14 @@ def main():
                                   sslContext=s)
 
         pc = si.content.propertyCollector
+        filter_spec = create_filter_spec(si, pc)
+        options = vmodl.query.PropertyCollector.RetrieveOptions()
+        result = pc.RetrievePropertiesEx([filter_spec], options)
+        vms = filter_results(result)
+        print(vms)
+        print("VMs")
+        for vm in vms:
+            print(vm)
 
 #       testing VC connection
         vctime = si.CurrentTime()
@@ -93,6 +113,7 @@ def main():
         for i in extensions:
             print(i.extensionList)
 
+        print("testing filter")
         test = create_filter_spec(si,pc)
         print(test)
 

@@ -55,6 +55,20 @@ def main():
                                   pwd=password,
                                   sslContext=s)
 
+        # STEP3: Create a TraversalSpec
+
+        # Implementation seems OK
+        travType = vim.view.View
+        print(travType)
+        print(type(travType))
+        travSpec = vmodl.query.PropertyCollector.TraversalSpec(
+            name="travSpec for the View",
+            path="company",
+            skip=False,
+            type=vim.view.View)
+
+        print("Printing travSpec.....")
+        print(travSpec)
 
 # STEP1: View Creation
 
@@ -77,20 +91,21 @@ def main():
         objSpec = vmodl.Query.PropertyCollector.ObjectSpec(
                 obj=extview,
                 skip=False,
-                selectSet=[])
-
+            selectSet=[travSpec])
+        print("Printing objSpec")
         print(objSpec)
 
         propSpec = vmodl.Query.PropertyCollector.PropertySpec( #use vim.extensionManager
                 type=vim.extensionManager,
                 all=False,
                 pathSet=["company"])
-
+        print("Printing propSpec")
         print(propSpec)
 
         filterSpec = vmodl.Query.PropertyCollector.FilterSpec(
                 propSet=[propSpec],
-                objectSet=[objSpec])
+            objectSet=[objSpec],
+            reportMissingObjectsInResults=False)
 
         print("==>FilterSpec to be used")
         print(filterSpec)
@@ -100,23 +115,21 @@ def main():
         task_filter = vmodl.query.PropertyCollector.Filter(filterSpec, True)
         print(task_filter)
 
+        # Retrieve properties
+        retOptions = vim.PropertyCollector.RetrieveOptions()
+        print(retOptions)
+        props = si.content.propertyCollector.RetrievePropertiesEx(specSet=[filterSpec], options=retOptions)
+        print("Printing PROPS")
+        print(props)
 
-# STEP3: Create a TraversalSpec
+    #        data = []
+    #        for obj in props:
+    #            properties = {}
+    #            for prop in obj.propSet:
+    #                properties[prop.name] = prop.val
 
-        # Implementation seems OK
-        travType = vim.view.View
-        print(travType)
-        print(type(travType))
-        travSpec =  vmodl.query.PropertyCollector.TraversalSpec(
-                    path="company",
-                    skip=False,
-                    type=vim.view.View)
-
-        print("Printing travSpec.....")
-        print(travSpec)
-
-
-
+    #            data.append(properties)
+    #            print(data)
 
 
     except vmodl.MethodFault as error:
