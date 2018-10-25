@@ -14,7 +14,8 @@ if not sys.warnoptions:
 
 url = "https://172.168.10.150/rest/vxm/v1/system"
 
-response = requests.request("GET", url, verify=False, auth=('administrator@vsphere.local', 'VxR@il1!'))
+response = requests.request("GET", url, verify=False,
+                            auth=('administrator@vsphere.local', 'VxR@il1!'))
 
 pprint = jsbeautifier.beautify(response.text)
 
@@ -24,7 +25,9 @@ print(pprint)
 # Establish VC Connection #
 ###########################
 
-si = connect.SmartConnectNoSSL(host='172.168.10.149', user='administrator@vsphere.local', pwd='VxR@il1!')
+si = connect.SmartConnectNoSSL(host='172.168.10.149',
+                               user='administrator@vsphere.local',
+                               pwd='VxR@il1!')
 
 print(si.serverClock)
 
@@ -47,12 +50,13 @@ def findVxRM():
         if vm.name == 'VxRail Manager':
             vxrmIPs.append(vm.summary.guest.ipAddress)
 
-    print(vxrmIPs)
+    #    print(vxrmIPs)
 
-    return None
+    return vxrmIPs
 
 
-findVxRM()
+for i in findVxRM():
+    print(i)
 # vxrm APIS
 
 # GET https://<VxM IP>/rest/vxm/v1/system
