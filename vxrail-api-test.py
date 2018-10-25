@@ -14,12 +14,12 @@ if not sys.warnoptions:
 
 url = "https://172.168.10.150/rest/vxm/v1/system"
 
-response = requests.request("GET", url, verify=False,
-                            auth=('administrator@vsphere.local', 'VxR@il1!'))
+# response = requests.request("GET", url, verify=False,
+#                            auth=('administrator@vsphere.local', 'VxR@il1!'))
 
-pprint = jsbeautifier.beautify(response.text)
+# pprint = jsbeautifier.beautify(response.text)
 
-print(pprint)
+# print(pprint)
 
 ###########################
 # Establish VC Connection #
@@ -38,10 +38,10 @@ def isVxRailCluster():
     return None
 
 
-# function that searchs for all vxrail managaer Vms registered in DC and returns their IP
+# Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
 
-def findVxRM():
+def findvxrm():
     vxrmIPs = []
 
     content = si.RetrieveServiceContent()
@@ -51,13 +51,39 @@ def findVxRM():
         if vm.name == 'VxRail Manager':
             vxrmIPs.append(vm.summary.guest.ipAddress)
 
-    #    print(vxrmIPs)
-
     return vxrmIPs
 
 
-for i in findVxRM():
+# Function to modify the URL for the query API.
+# Takes the IP and input and returns the modified URL
+
+def modifyurl(ip):
+    url = 'https://' + str(ip) + '/rest/vxm/v1/'
+    return str(url)
+
+
+# Function that takes an argument and calls a set of API based on a list
+#
+
+api_list = ['system-health', 'system']
+
+
+def call_api(ip, api):
+    api_call = modifyurl(i) + api
+    response = requests.request("GET", api_call, verify=False,
+                                auth=('administrator@vsphere.local', 'VxR@il1!'))
+    pprint = jsbeautifier.beautify(response.text)
+    print(api_call)
+    return pprint
+
+
+api = input("Choose API: ")
+
+for i in findvxrm():
     print(i)
+    print(modifyurl(i))
+    print(call_api(i, api))
+
 # vxrm APIS
 
 # GET https://<VxM IP>/rest/vxm/v1/system
