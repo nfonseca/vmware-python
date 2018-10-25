@@ -32,7 +32,7 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# function to check if cluster is vxrail or not
+# function to check if cluster is vxrail or not. I think we dont need this
 
 def isVxRailCluster():
     return None
