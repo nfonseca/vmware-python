@@ -69,12 +69,15 @@ api_list = ['system-health', 'system']
 
 
 def call_api(ip, api):
-    api_call = modifyurl(i) + api
-    response = requests.request("GET", api_call, verify=False,
-                                auth=('administrator@vsphere.local', 'VxR@il1!'))
-    pprint = jsbeautifier.beautify(response.text)
-    print(api_call)
-    return pprint
+    try:
+        api_call = modifyurl(i) + api
+        response = requests.request("GET", api_call, verify=False,
+                                    auth=('administrator@vsphere.local', 'VxR@il1!'))
+        pprint = jsbeautifier.beautify(response.text)
+        return pprint
+
+    except:
+        print('Error Fetching Information for one VXRM VM:' + str(ip))
 
 
 api = input("Choose API: ")
