@@ -32,7 +32,7 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# function to check if cluster is vxrail or not. I think we dont need this
+# function to check if cluster is vxrail or not
 
 def isVxRailCluster():
     return None
@@ -87,6 +87,8 @@ for i in findvxrm():
     print(modifyurl(i))
     print(call_api(i, api))
 
-# vxrm APIS
-
-# GET https://<VxM IP>/rest/vxm/v1/system
+# Things to improve/implement
+# 1- Provide a Selection Menu for the APIs that we are going to run
+# 2 - List the VXRMs we want to run 1 by 1 or ALL
+# 3 - Add display of whats going on
+# 4 - How to deal with GET and POST. So far we only do gets.....
