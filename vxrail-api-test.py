@@ -40,8 +40,10 @@ def isVxRailCluster():
 
 # Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
+# should add an exception block when no VXRMs are found
 
 def findvxrm():
+    # need to add exceptions when no vxrm vms are found
     vxrmIPs = []
 
     content = si.RetrieveServiceContent()
@@ -70,22 +72,30 @@ api_list = ['system-health', 'system']
 
 def call_api(ip, api):
     try:
-        api_call = modifyurl(i) + api
+        api_call = modifyurl(ip) + str(api)
+        print(api_call)
         response = requests.request("GET", api_call, verify=False,
                                     auth=('administrator@vsphere.local', 'VxR@il1!'))
+        print(response)
         pprint = jsbeautifier.beautify(response.text)
-        return pprint
+        output = print(pprint)
+
+        return output
 
     except:
         print('Error Fetching Information for one VXRM VM:' + str(ip))
 
 
-api = input("Choose API: ")
+def main():
+    api = input("Choose API: ")
+    vx = findvxrm()
 
-for i in findvxrm():
-    print(i)
-    print(modifyurl(i))
-    print(call_api(i, api))
+    for i in vx:
+        print('Checking VxRail Manager: ', i)
+        call_api(i, api)
+
+
+main()
 
 # Things to improve/implement
 # 1- Provide a Selection Menu for the APIs that we are going to run
