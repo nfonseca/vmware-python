@@ -90,6 +90,7 @@ def call_api(ip, api):
         print('Error Fetching Information for one VXRM VM:' + str(ip))
 
 
+#
 # function to deal with all the different APIs for VXRM
 # needs to deal with POST and GET APIs ....
 # this is to replace the need for the user to manually write the api name
