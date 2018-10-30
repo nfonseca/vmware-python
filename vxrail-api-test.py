@@ -32,12 +32,6 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# function to check if cluster is vxrail or not
-
-def isVxRailCluster():
-    return None
-
-
 # Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
 # should add an exception block when no VXRMs are found
@@ -45,15 +39,25 @@ def isVxRailCluster():
 # if size is zero print no VXRM found
 
 def findvxrm():
-    # need to add exceptions when no vxrm vms are found
-    vxrmIPs = []
+    try:
 
-    content = si.RetrieveServiceContent()
-    containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
+        vxrmIPs = []
 
-    for vm in containerVM.view:
-        if vm.name == 'VxRail Manager':
-            vxrmIPs.append(vm.summary.guest.ipAddress)
+        content = si.RetrieveServiceContent()
+        containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
+
+        for vm in containerVM.view:
+            if vm.name == 'VxRail Manager':
+                vxrmIPs.append(vm.summary.guest.ipAddress)
+
+        if len(vxrmIPs) == 0:
+            print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
+
+        else:
+            print('Found: ' + str(len(vxrmIPs)) + ' VxRail Manager VMs')
+    except:
+
+        print('Error Calling Function findvxrm()')
 
     return vxrmIPs
 
