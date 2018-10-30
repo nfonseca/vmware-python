@@ -90,8 +90,44 @@ def call_api(ip, api):
         print('Error Fetching Information for one VXRM VM:' + str(ip))
 
 
+# function to deal with all the different APIs for VXRM
+# needs to deal with POST and GET APIs ....
+# this is to replace the need for the user to manually write the api name
+# For POST requested we will also have to sort out the details
+
+def api_list():
+    try:
+        ans = True
+        api = None
+        while ans:
+            print("""
+            1. System Health
+            2. System Info
+            3. Exit/Quit
+            """)
+
+            ans = input('What API would you like to call? ')
+            if ans == '1':
+                api = 'system-health'
+                break
+            elif ans == '2':
+                api = 'system'
+                break
+            elif ans == '3':
+                print('\n Goodbye')
+                ans = None
+            else:
+                print('\n Not Valid Choice Try again')
+
+    except:
+        print('error')
+
+    return api
+
+
 def main():
-    api = input("Choose API: ")
+    #    api = input("Choose API: ")
+    api = api_list()
     vx = findvxrm()
 
     for i in vx:
