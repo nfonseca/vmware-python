@@ -81,6 +81,7 @@ def call_api(ip, api):
         api_call = modifyurl(ip) + str(api)
         response = requests.request("GET", api_call, verify=False,
                                     auth=('administrator@vsphere.local', 'VxR@il1!'))
+        #        response =
         pprint = jsbeautifier.beautify(response.text)
         result = print(pprint)
 
@@ -95,16 +96,24 @@ def call_api(ip, api):
 # needs to deal with POST and GET APIs ....
 # this is to replace the need for the user to manually write the api name
 # For POST requested we will also have to sort out the details
+# we also need to take in account the vxrail manager version as not all APIs are available
+# the following function needs to be redesigned. It needs to deal with POST/GET methods and return
+# something useful for the call_api() function. So all APIs should be listed here
+# shall we use dictionaries ? then we pass the dic values to the call api function ?
+# https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
 def api_list():
     try:
         ans = True
         api = None
+        call = None
         while ans:
             print("""
+            0. Exit/Quit
             1. System Health
             2. System Info
-            3. Exit/Quit
+            3. Support Logs
+
             """)
 
             ans = input('What API would you like to call? ')
@@ -114,7 +123,11 @@ def api_list():
             elif ans == '2':
                 api = 'system'
                 break
-            elif ans == '3':
+            elif ans == '3':  # POST Implementation
+                api = 'support/logs'
+                call = requests.post('https://httpbin.org/post')
+                break
+            elif ans == '0':
                 print('\n Goodbye')
                 ans = None
             else:
