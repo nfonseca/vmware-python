@@ -41,6 +41,8 @@ def isVxRailCluster():
 # Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
 # should add an exception block when no VXRMs are found
+# include a counter for the size of the array of vxrm ip
+# if size is zero print no VXRM found
 
 def findvxrm():
     # need to add exceptions when no vxrm vms are found
