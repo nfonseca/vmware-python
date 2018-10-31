@@ -49,12 +49,13 @@ def findvxrm():
         for vm in containerVM.view:
             if vm.name == 'VxRail Manager':
                 vxrmIPs.append(vm.summary.guest.ipAddress)
+                lenvxrmIPs = len(vxrmIPs)
 
         if len(vxrmIPs) == 0:
             print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
 
         else:
-            print('Found: ' + str(len(vxrmIPs)) + ' VxRail Manager VMs')
+            print(f'Found: {lenvxrmIPs} VxRail Manager VMs')
     except:
 
         print('Error Calling Function findvxrm()')
@@ -81,7 +82,7 @@ def call_api(ip, api):
         api_call = modifyurl(ip) + str(api)
         response = requests.request("GET", api_call, verify=False,
                                     auth=('administrator@vsphere.local', 'VxR@il1!'))
-        #        response =
+
         pprint = jsbeautifier.beautify(response.text)
         result = print(pprint)
 
