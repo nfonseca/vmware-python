@@ -12,14 +12,7 @@ if not sys.warnoptions:
 
     warnings.simplefilter("ignore")
 
-# url = "https://172.168.10.150/rest/vxm/v1/system"
 
-# response = requests.request("GET", url, verify=False,
-#                            auth=('administrator@vsphere.local', 'VxR@il1!'))
-
-# pprint = jsbeautifier.beautify(response.text)
-
-# print(pprint)
 
 ###########################
 # Establish VC Connection #
@@ -92,12 +85,14 @@ api_list = ['system-health', 'system']
 
 def call_api(url, method):
     creds = ('administrator@vsphere.local', 'VxR@il1!')
+    payload = {'esxi'}
+    headers = {'Content-type': 'application/json'}
 
     try:
-        #        api_call = modifyurl(ip) + str(api)
-        response = requests.request(method, url, verify=False,
-                                    auth=creds)
 
+        #        response = requests.request(method, url, verify=False,
+        #                                    auth=creds,json=payload)
+        response = requests.post(url, verify=False, headers=headers, data=[('nodes', 'vxrm')])
         pprint = jsbeautifier.beautify(response.text)
         result = print(pprint)
 
@@ -119,6 +114,7 @@ def call_api(url, method):
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
 def api_list(ip):
+
     global method
     x = None
 
