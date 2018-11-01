@@ -12,7 +12,7 @@ if not sys.warnoptions:
 
     warnings.simplefilter("ignore")
 
-url = "https://172.168.10.150/rest/vxm/v1/system"
+# url = "https://172.168.10.150/rest/vxm/v1/system"
 
 # response = requests.request("GET", url, verify=False,
 #                            auth=('administrator@vsphere.local', 'VxR@il1!'))
@@ -77,8 +77,8 @@ def modifyurl(ip):
 # https://<VxRail IP address>/rest/vxm/v1/clusters/available-nodes
 # https://<VxRail IP address>/rest/vxm/v1/support/logs
 
-def endpoint_url(api):
-    endpoint = modifyurl(ip) + str(api)
+def endpoint_url(ip, api):
+    endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
     return endpoint
 
 
@@ -88,10 +88,12 @@ def endpoint_url(api):
 api_list = ['system-health', 'system']
 
 
-def call_api(ip, api):
+def call_api(url):
+
+
     try:
-        api_call = modifyurl(ip) + str(api)
-        response = requests.request("GET", api_call, verify=False,
+        #        api_call = modifyurl(ip) + str(api)
+        response = requests.request("GET", url, verify=False,
                                     auth=('administrator@vsphere.local', 'VxR@il1!'))
 
         pprint = jsbeautifier.beautify(response.text)
@@ -114,8 +116,10 @@ def call_api(ip, api):
 # shall we use dictionaries ? then we pass the dic values to the call api function ?
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
-def api_list():
+def api_list(ip):
     api = None
+    ip = None
+    x = None
 
     try:
         ans = True
@@ -131,6 +135,8 @@ def api_list():
             ans = input('What API would you like to call? ')
             if ans == '1':
                 api = 'system-health'
+                x = endpoint_url(ip, api)
+                print(x)
                 break
             elif ans == '2':
                 api = 'system'
@@ -146,19 +152,21 @@ def api_list():
                 print('\n Not Valid Choice Try again')
 
     except:
-        print('error')
+        print('Error on api_list()')
 
-    return api
+    return x
 
 
 def main():
-    #    api = input("Choose API: ")
-    api = api_list()
+    api = api_list(i)
     vx = findvxrm()
 
+    # loop over all the VXRM IPs found on the DC by findvxrm() function
     for i in vx:
         print('Checking VxRail Manager: ', i)
-        call_api(i, api)
+        api = api_list(i)
+        #        ip = i
+        call_api(api)
 
 
 main()

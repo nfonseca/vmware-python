@@ -118,7 +118,6 @@ def call_api(url):
 
 def api_list(ip):
     api = None
-    #    ip = None
     x = None
 
     try:
@@ -136,10 +135,11 @@ def api_list(ip):
             if ans == '1':
                 api = 'system-health'
                 x = endpoint_url(ip, api)
-                print(x)
+                print('endpoint inside api_list', x)
                 break
             elif ans == '2':
                 api = 'system'
+                x = endpoint_url(ip, api)
                 break
             elif ans == '3':  # POST Implementation
                 api = 'support/logs'
@@ -158,15 +158,18 @@ def api_list(ip):
 
 
 def main():
-    #    api = api_list(i)
+
     vx = findvxrm()
 
     # loop over all the VXRM IPs found on the DC by findvxrm() function
     for i in vx:
         print('Checking VxRail Manager: ', i)
         api = api_list(i)
-        epoint = endpoint_url(i, api)
-        call_api(epoint)
+        call_api(api)
+
+
+#        epoint = endpoint_url(i, api)
+#        call_api(epoint)
 
 
 main()
