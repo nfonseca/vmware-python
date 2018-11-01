@@ -87,6 +87,8 @@ api_list = ['system-health', 'system']
 def call_api(url, method):
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     payload = {'types': 'vxm'}
+    zzz = {"dryrun": "false"}
+
     headers = {'Content-type': 'application/json'}
 
     try:
@@ -94,7 +96,7 @@ def call_api(url, method):
         #        response = requests.request(method, url, verify=False,
         #                                    auth=creds,json=payload)
 
-        response = requests.post(url, verify=False, headers=headers, params=payload, auth=creds, json=payload)
+        response = requests.post(url, verify=False, headers=headers, params=payload, auth=creds, json=zzz)
         # pprint = jsbeautifier.beautify(response.text)
         # result = print(pprint)
         result = response.status_code
@@ -128,6 +130,7 @@ def api_list(ip):
             1. System Health
             2. System Info
             3. Support Logs
+            4. Cluster Shutdown Dry Run
 
             """)
 
@@ -148,6 +151,12 @@ def api_list(ip):
                 x = endpoint_url(ip, api)
                 method = 'POST'
                 break
+            elif ans == '4':  # POST Implementation
+                api = 'cluster/shutdown'
+                x = endpoint_url(ip, api)
+                method = 'POST'
+                break
+
             elif ans == '0':
                 print('\n Goodbye')
                 ans = None
