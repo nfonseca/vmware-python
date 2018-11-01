@@ -39,9 +39,9 @@ print(si.serverClock)
 # if size is zero print no VXRM found
 
 def findvxrm():
-    try:
+    vxrmIPs = []
 
-        vxrmIPs = []
+    try:
 
         content = si.RetrieveServiceContent()
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
@@ -104,10 +104,10 @@ def call_api(ip, api):
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
 def api_list():
+    api = None
+
     try:
         ans = True
-        api = None
-        call = None
         while ans:
             print("""
             0. Exit/Quit
