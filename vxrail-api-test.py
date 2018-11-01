@@ -71,6 +71,17 @@ def modifyurl(ip):
     return str(url)
 
 
+# function that return the endpoint for the API CALL
+# Ex:
+# https://<VxRail IP address>/rest/vxm/v1/system-health
+# https://<VxRail IP address>/rest/vxm/v1/clusters/available-nodes
+# https://<VxRail IP address>/rest/vxm/v1/support/logs
+
+def endpoint_url(api):
+    endpoint = modifyurl(ip) + str(api)
+    return endpoint
+
+
 # Function that takes an argument and calls a set of API based on a list
 #
 
