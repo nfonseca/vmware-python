@@ -5,6 +5,7 @@ from pyVmomi import vim, vmodl
 from pyVim import connect
 import requests
 import jsbeautifier
+import json
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -85,18 +86,19 @@ api_list = ['system-health', 'system']
 
 def call_api(url, method):
     creds = ('administrator@vsphere.local', 'VxR@il1!')
-    payload = {'esxi'}
+    payload = {'types': 'vxm'}
     headers = {'Content-type': 'application/json'}
 
     try:
 
         #        response = requests.request(method, url, verify=False,
         #                                    auth=creds,json=payload)
-        response = requests.post(url, verify=False, headers=headers, data=[('nodes', 'vxrm')])
-        pprint = jsbeautifier.beautify(response.text)
-        result = print(pprint)
 
-        return result
+        response = requests.post(url, verify=False, headers=headers, params=payload, auth=creds, json=payload)
+        # pprint = jsbeautifier.beautify(response.text)
+        # result = print(pprint)
+        result = response.status_code
+        return print(result)
 
     except:
         print('Error Fetching Information for one VXRM VM:' + str(ip))
