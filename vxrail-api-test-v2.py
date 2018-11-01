@@ -90,11 +90,13 @@ def endpoint_url(ip, api):
 api_list = ['system-health', 'system']
 
 
-def call_api(url):
+def call_api(url, method):
+    creds = ('administrator@vsphere.local', 'VxR@il1!')
+
     try:
         #        api_call = modifyurl(ip) + str(api)
-        response = requests.request("GET", url, verify=False,
-                                    auth=('administrator@vsphere.local', 'VxR@il1!'))
+        response = requests.request(method, url, verify=False,
+                                    auth=creds)
 
         pprint = jsbeautifier.beautify(response.text)
         result = print(pprint)
@@ -117,7 +119,7 @@ def call_api(url):
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
 def api_list(ip):
-    api = None
+    global method
     x = None
 
     try:
@@ -135,15 +137,18 @@ def api_list(ip):
             if ans == '1':
                 api = 'system-health'
                 x = endpoint_url(ip, api)
+                method = 'GET'
                 print('endpoint inside api_list', x)
                 break
             elif ans == '2':
                 api = 'system'
                 x = endpoint_url(ip, api)
+                method = 'GET'
                 break
             elif ans == '3':  # POST Implementation
                 api = 'support/logs'
-                call = requests.post('https://httpbin.org/post')
+                x = endpoint_url(ip, api)
+                method = 'POST'
                 break
             elif ans == '0':
                 print('\n Goodbye')
@@ -165,11 +170,8 @@ def main():
     for i in vx:
         print('Checking VxRail Manager: ', i)
         api = api_list(i)
-        call_api(api)
+        call_api(api, method)
 
-
-#        epoint = endpoint_url(i, api)
-#        call_api(epoint)
 
 
 main()
