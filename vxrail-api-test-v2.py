@@ -5,7 +5,6 @@ from pyVmomi import vim, vmodl
 from pyVim import connect
 import requests
 import jsbeautifier
-import json
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -203,7 +202,8 @@ def main():
 main()
 
 # Things to improve/implement
-# 1- Provide a Selection Menu for the APIs that we are going to run
+# 1- Provide a Selection Menu for the APIs that we are going to run. DONE !
 # 2 - List the VXRMs we want to run 1 by 1 or ALL
-# 3 - Add display of whats going on
-# 4 - How to deal with GET and POST. So far we only do gets.....
+# 3 - Add display of whats going on. DONE !
+# 4 - How to deal with GET and POST. DONE !
+# Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
