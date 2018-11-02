@@ -13,8 +13,6 @@ if not sys.warnoptions:
 
     warnings.simplefilter("ignore")
 
-
-
 ###########################
 # Establish VC Connection #
 ###########################
@@ -66,10 +64,6 @@ def modifyurl(ip):
 
 
 # function that return the endpoint for the API CALL
-# Ex:
-# https://<VxRail IP address>/rest/vxm/v1/system-health
-# https://<VxRail IP address>/rest/vxm/v1/clusters/available-nodes
-# https://<VxRail IP address>/rest/vxm/v1/support/logs
 
 def endpoint_url(ip, api):
     endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
@@ -84,22 +78,44 @@ def endpoint_url(ip, api):
 api_list = ['system-health', 'system']
 
 
+# below function just needs to execute the API call and pass the parameters
 def call_api(url, method):
+    # common to all requests
+
     creds = ('administrator@vsphere.local', 'VxR@il1!')
+    headers = {'Content-type': 'application/json'}
     payload = {'types': 'vxm'}
     zzz = {"dryrun": "false"}
 
-    headers = {'Content-type': 'application/json'}
-
     try:
 
-        #        response = requests.request(method, url, verify=False,
-        #                                    auth=creds,json=payload)
+        response = requests.request(method, url,
+                                    verify=False,
+                                    headers=headers,
+                                    auth=creds,
+                                    json=parameters)
 
-        response = requests.post(url, verify=False, headers=headers, params=payload, auth=creds, json=zzz)
-        # pprint = jsbeautifier.beautify(response.text)
-        # result = print(pprint)
         result = response.status_code
+        print(response.text)
+        #        print(response.json())
+
+        if method == 'POST':
+            job_id = response.json()
+            req_id = job_id.get('request_id')
+
+            resp_get_id = requests.request('GET', 'https://172.168.10.150/rest/vxm/v1/requests/' + req_id,
+                                           verify=False,
+                                           auth=creds)
+
+            beauty = jsbeautifier.beautify(resp_get_id.text)
+
+            print('''
+            ##################################
+            # The Status of the API CALL is: #
+            ##################################
+
+            ''', beauty)
+
         return print(result)
 
     except:
@@ -118,8 +134,8 @@ def call_api(url, method):
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
 def api_list(ip):
-
     global method
+    global parameters
     x = None
 
     try:
@@ -139,6 +155,7 @@ def api_list(ip):
                 api = 'system-health'
                 x = endpoint_url(ip, api)
                 method = 'GET'
+                parameters = None
                 print('endpoint inside api_list', x)
                 break
             elif ans == '2':
@@ -155,6 +172,7 @@ def api_list(ip):
                 api = 'cluster/shutdown'
                 x = endpoint_url(ip, api)
                 method = 'POST'
+                parameters = {"dryrun": "false"}
                 break
 
             elif ans == '0':
@@ -170,7 +188,6 @@ def api_list(ip):
 
 
 def main():
-
     vx = findvxrm()
 
     # loop over all the VXRM IPs found on the DC by findvxrm() function
@@ -178,7 +195,6 @@ def main():
         print('Checking VxRail Manager: ', i)
         api = api_list(i)
         call_api(api, method)
-
 
 
 main()
