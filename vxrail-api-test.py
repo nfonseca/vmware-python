@@ -12,15 +12,6 @@ if not sys.warnoptions:
 
     warnings.simplefilter("ignore")
 
-# url = "https://172.168.10.150/rest/vxm/v1/system"
-
-# response = requests.request("GET", url, verify=False,
-#                            auth=('administrator@vsphere.local', 'VxR@il1!'))
-
-# pprint = jsbeautifier.beautify(response.text)
-
-# print(pprint)
-
 ###########################
 # Establish VC Connection #
 ###########################
@@ -44,7 +35,9 @@ def findvxrm():
     try:
 
         content = si.RetrieveServiceContent()
-        containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
+        containerVM = content.viewManager.CreateContainerView(content.rootFolder,
+                                                              [vim.VirtualMachine],
+                                                              True)
 
         for vm in containerVM.view:
             if vm.name == 'VxRail Manager':
@@ -71,35 +64,20 @@ def modifyurl(ip):
     return str(url)
 
 
-# function that return the endpoint for the API CALL
-# Ex:
-# https://<VxRail IP address>/rest/vxm/v1/system-health
-# https://<VxRail IP address>/rest/vxm/v1/clusters/available-nodes
-# https://<VxRail IP address>/rest/vxm/v1/support/logs
-
-def endpoint_url(ip, api):
-    endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
-    return endpoint
-
-
-# Function that takes an argument and calls a set of API based on a list
-#
-
-api_list = ['system-health', 'system']
-
-
-def call_api(url):
-
-
+def call_api(ip, api):
     try:
-        #        api_call = modifyurl(ip) + str(api)
-        response = requests.request("GET", url, verify=False,
+
+        api_call = modifyurl(ip) + str(api)
+        response = requests.request("GET", api_call,
+                                    verify=False,
                                     auth=('administrator@vsphere.local', 'VxR@il1!'))
 
         pprint = jsbeautifier.beautify(response.text)
         result = print(pprint)
 
         return result
+
+
 
     except:
         print('Error Fetching Information for one VXRM VM:' + str(ip))
@@ -116,15 +94,14 @@ def call_api(url):
 # shall we use dictionaries ? then we pass the dic values to the call api function ?
 # https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
 
-def api_list(ip):
+def api_list():
     api = None
-    ip = None
-    x = None
 
     try:
         ans = True
         while ans:
             print("""
+
             0. Exit/Quit
             1. System Health
             2. System Info
@@ -135,8 +112,6 @@ def api_list(ip):
             ans = input('What API would you like to call? ')
             if ans == '1':
                 api = 'system-health'
-                x = endpoint_url(ip, api)
-                print(x)
                 break
             elif ans == '2':
                 api = 'system'
@@ -146,27 +121,30 @@ def api_list(ip):
                 call = requests.post('https://httpbin.org/post')
                 break
             elif ans == '0':
-                print('\n Goodbye')
-                ans = None
+                print('\nExiting Program ...')
+                break
             else:
                 print('\n Not Valid Choice Try again')
 
     except:
-        print('Error on api_list()')
+        print('error')
 
-    return x
+    return api
 
 
 def main():
-    api = api_list(i)
-    vx = findvxrm()
 
-    # loop over all the VXRM IPs found on the DC by findvxrm() function
+    vx = findvxrm()
+    api = api_list()
+
     for i in vx:
-        print('Checking VxRail Manager: ', i)
-        api = api_list(i)
-        #        ip = i
-        call_api(api)
+
+        if api is not None:
+
+            print('Checking VxRail Manager: ', i)
+            call_api(i, api)
+        else:
+            print('API Selected is null')
 
 
 main()
