@@ -97,7 +97,7 @@ def call_api(url, method):
               f'API Response is: {jsbeautifier.beautify(response.text)}')
 
         # below condition if to deal with POST requests.
-        # we get the request_id and process it
+        # we get the request_id and process it in order to track it
 
         if method == 'POST':
             job_id = response.json()
@@ -115,7 +115,7 @@ def call_api(url, method):
 # The Status of the API CALL is: #
 ##################################
 
-            ''', beauty)
+                ''', beauty)
 
         return result
 
@@ -168,6 +168,7 @@ def api_list(ip):
                 api = 'support/logs'
                 x = endpoint_url(ip, api)
                 method = 'POST'
+                parameters = {"types": ["vxm"]}
                 break
             elif ans == '4':  # POST Implementation
                 api = 'cluster/shutdown'
