@@ -94,7 +94,7 @@ def call_api(url, method):
 
         result = response.status_code
         print(f'API Call {url} Submitted and Return Code is: {response.status_code} \n'
-              f'API Response is: {response.text}')
+              f'API Response is: {jsbeautifier.beautify(response.text)}')
 
         # below condition if to deal with POST requests.
         # we get the request_id and process it
@@ -111,9 +111,9 @@ def call_api(url, method):
 
             print('''
 
-            ##################################
-            # The Status of the API CALL is: #
-            ##################################
+##################################
+# The Status of the API CALL is: #
+##################################
 
             ''', beauty)
 
@@ -162,6 +162,7 @@ def api_list(ip):
                 api = 'system'
                 x = endpoint_url(ip, api)
                 method = 'GET'
+                parameters = None
                 break
             elif ans == '3':  # POST Implementation
                 api = 'support/logs'
@@ -174,9 +175,8 @@ def api_list(ip):
                 method = 'POST'
                 parameters = {"dryrun": "false"}
                 break
-
             elif ans == '0':
-                print('\n Goodbye')
+                print('\nExiting Program ...')
                 ans = None
             else:
                 print('\n Not Valid Choice Try again')
@@ -192,9 +192,11 @@ def main():
 
     # loop over all the VXRM IPs found on the DC by findvxrm() function
     for i in vx:
+
         print('Checking VxRail Manager: ', i)
         api = api_list(i)
-        call_api(api, method)
+        if api is not None:
+            call_api(api, method)
 
 
 main()
