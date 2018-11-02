@@ -67,7 +67,6 @@ def modifyurl(ip):
 
 def endpoint_url(ip, api):
     endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
-    print('xxx', endpoint)
 
     return endpoint
 
@@ -84,8 +83,6 @@ def call_api(url, method):
 
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     headers = {'Content-type': 'application/json'}
-    payload = {'types': 'vxm'}
-    zzz = {"dryrun": "false"}
 
     try:
 
@@ -96,8 +93,11 @@ def call_api(url, method):
                                     json=parameters)
 
         result = response.status_code
-        print(response.text)
-        #        print(response.json())
+        print(f'API Call {url} Submitted and Return Code is: {response.status_code} \n'
+              f'API Response is: {response.text}')
+
+        # below condition if to deal with POST requests.
+        # we get the request_id and process it
 
         if method == 'POST':
             job_id = response.json()
@@ -110,13 +110,14 @@ def call_api(url, method):
             beauty = jsbeautifier.beautify(resp_get_id.text)
 
             print('''
+
             ##################################
             # The Status of the API CALL is: #
             ##################################
 
             ''', beauty)
 
-        return print(result)
+        return result
 
     except:
         print('Error Fetching Information for one VXRM VM:' + str(ip))
@@ -156,7 +157,6 @@ def api_list(ip):
                 x = endpoint_url(ip, api)
                 method = 'GET'
                 parameters = None
-                print('endpoint inside api_list', x)
                 break
             elif ans == '2':
                 api = 'system'
