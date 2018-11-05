@@ -146,7 +146,7 @@ def api_list(ip):
             1. System Health
             2. System Info
             3. Support Logs
-            4. Cluster Shutdown Dry Run
+            4. Cluster Shutdown
 
             """)
 
@@ -173,7 +173,13 @@ def api_list(ip):
                 api = 'cluster/shutdown'
                 x = endpoint_url(ip, api)
                 method = 'POST'
-                parameters = {"dryrun": "false"}
+                param = input('''Select Operation Type:
+                1 - Dry Run Only
+                2 - Cluster Shutdown''')
+                if param == '1':
+                    parameters = {"dryrun": "true"}
+                else:
+                    parameters = {"dryrun": "false"}
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
@@ -207,5 +213,5 @@ main()
 # 3 - Add display of whats going on. DONE !
 # 4 - How to deal with GET and POST. DONE !
 # 5 - Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
-# 4 - Get VxRail version Info from VC (4.5 vs 4.7)
-# 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example)
+# 4 - Get VxRail version Info from VC (4.5 vs 4.7). Couldnt find that info in the lab
+# 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example) DONE
