@@ -206,4 +206,6 @@ main()
 # 2 - List the VXRMs we want to run 1 by 1 or ALL
 # 3 - Add display of whats going on. DONE !
 # 4 - How to deal with GET and POST. DONE !
-# Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
+# 5 - Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
+# 4 - Get VxRail version Info from VC (4.5 vs 4.7)
+# 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example)
