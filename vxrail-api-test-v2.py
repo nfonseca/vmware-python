@@ -6,6 +6,7 @@ from pyVim import connect
 import requests
 import jsbeautifier
 
+
 # disable warnings from SSL Check
 if not sys.warnoptions:
     import warnings
@@ -77,6 +78,7 @@ api_list = ['system-health', 'system']
 
 
 # below function just needs to execute the API call and pass the parameters
+
 def call_api(url, method):
     # common to all requests
 
@@ -95,7 +97,7 @@ def call_api(url, method):
         print(f'API Call {url} Submitted and Return Code is: {response.status_code} \n'
               f'API Response is: {jsbeautifier.beautify(response.text)}')
 
-        # below condition if to deal with POST requests.
+        # below condition needed to deal with POST requests.
         # we get the request_id and process it in order to track it
 
         if method == 'POST':
@@ -108,12 +110,10 @@ def call_api(url, method):
 
             beauty = jsbeautifier.beautify(resp_get_id.text)
 
-            print('''
-
-##################################
-# The Status of the API CALL is: #
-##################################
-
+            print('''\t
+            ##################################\t
+            # The Status of the API CALL is: #\t
+            ##################################\t
                 ''', beauty)
 
         return result
@@ -136,7 +136,7 @@ def call_api(url, method):
 def api_list(ip):
     global method
     global parameters
-    x = None
+    call = None
 
     try:
         ans = True
@@ -153,25 +153,25 @@ def api_list(ip):
             ans = input('What API would you like to call? ')
             if ans == '1':
                 api = 'system-health'
-                x = endpoint_url(ip, api)
+                call = endpoint_url(ip, api)
                 method = 'GET'
                 parameters = None
                 break
             elif ans == '2':
                 api = 'system'
-                x = endpoint_url(ip, api)
+                call = endpoint_url(ip, api)
                 method = 'GET'
                 parameters = None
                 break
             elif ans == '3':  # POST Implementation
                 api = 'support/logs'
-                x = endpoint_url(ip, api)
+                call = endpoint_url(ip, api)
                 method = 'POST'
                 parameters = {"types": ["vxm"]}
                 break
             elif ans == '4':  # POST Implementation
                 api = 'cluster/shutdown'
-                x = endpoint_url(ip, api)
+                call = endpoint_url(ip, api)
                 method = 'POST'
                 param = input('''Select Operation Type:
                 1 - Dry Run Only
@@ -190,7 +190,7 @@ def api_list(ip):
     except:
         print('Error on api_list()')
 
-    return x
+    return call
 
 
 def main():
@@ -213,5 +213,7 @@ main()
 # 3 - Add display of whats going on. DONE !
 # 4 - How to deal with GET and POST. DONE !
 # 5 - Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
-# 4 - Get VxRail version Info from VC (4.5 vs 4.7). Couldnt find that info in the lab
+# 4 - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldnt find that info in the lab
 # 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example) DONE
+# 6 - Program should always continue after an execution so we can choose other APIs
+# 7 - Selection Menu for the VXRMs we want to query
