@@ -47,7 +47,7 @@ def findvxrm():
             print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
 
         else:
-            print(f'Found: {lenvxrmIPs} VxRail Manager VMs')
+            print(f'Found a Total of: {lenvxrmIPs} VxRail Manager VMs')
     except:
 
         print('Error Calling Function findvxrm()')
@@ -195,6 +195,12 @@ def api_list(ip):
 
 def main():
     vx = findvxrm()
+    #    selection = input('Select VxRail Manager to use: ')
+    for vxrm in vx:
+        print(f'VXRM: {vxrm}')
+        selection = input('Select VxRail Manager to use: ')
+
+
 
     # loop over all the VXRM IPs found on the DC by findvxrm() function
     for i in vx:
@@ -212,8 +218,8 @@ main()
 # 2 - List the VXRMs we want to run 1 by 1 or ALL
 # 3 - Add display of whats going on. DONE !
 # 4 - How to deal with GET and POST. DONE !
-# 5 - Treat execptions when VXRM have no IP. Ideally IP should come from vSphere
-# 4 - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldnt find that info in the lab
+# 5 - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
+# 4 - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example) DONE
 # 6 - Program should always continue after an execution so we can choose other APIs
 # 7 - Selection Menu for the VXRMs we want to query
