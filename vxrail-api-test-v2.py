@@ -6,7 +6,6 @@ from pyVim import connect
 import requests
 import jsbeautifier
 
-
 # disable warnings from SSL Check
 if not sys.warnoptions:
     import warnings
@@ -194,19 +193,19 @@ def api_list(ip):
 
 
 def main():
+
     vx = findvxrm()
     #    selection = input('Select VxRail Manager to use: ')
+    #    print(vx)
     for vxrm in vx:
-        print(f'VXRM: {vxrm}')
-        selection = input('Select VxRail Manager to use: ')
+        print(f'VXRM Found with IP: {vxrm}')
 
+    selection = input('Type IP of VxRail Manager to Connect to: ')
+    if selection in vx:
+        print(vx.index(selection))
 
-
-    # loop over all the VXRM IPs found on the DC by findvxrm() function
-    for i in vx:
-
-        print('Checking VxRail Manager: ', i)
-        api = api_list(i)
+        print('Checking VxRail Manager: ', selection)
+        api = api_list(selection)
         if api is not None:
             call_api(api, method)
 
