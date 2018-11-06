@@ -103,7 +103,7 @@ def call_api(url, method):
             job_id = response.json()
             req_id = job_id.get('request_id')
 
-            resp_get_id = requests.request('GET', 'https://172.168.10.150/rest/vxm/v1/requests/' + req_id,
+            resp_get_id = requests.request('GET', 'https://' + selection + '/rest/vxm/v1/requests/' + req_id,
                                            verify=False,
                                            auth=creds)
 
@@ -193,7 +193,7 @@ def api_list(ip):
 
 
 def main():
-
+    global selection
     vx = findvxrm()
     #    selection = input('Select VxRail Manager to use: ')
     #    print(vx)
@@ -221,4 +221,6 @@ main()
 # 4 - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example) DONE
 # 6 - Program should always continue after an execution so we can choose other APIs
-# 7 - Selection Menu for the VXRMs we want to query
+# 7 - Selection Menu for the VXRMs we want to query. DONE !
+# 8 - Add an option to run the same API on ALL the VXRM.
+# 9 - Need to fix the POST request on call_api as we now have multiple vxrail choice. DONE !
