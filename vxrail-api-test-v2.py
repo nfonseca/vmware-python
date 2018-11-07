@@ -233,7 +233,7 @@ main()
 
 # What API would you like to call? 3
 # API Call https://172.168.10.150/rest/vxm/v1/support/logs Submitted and Return Code is: 500
-# API Response is: {
+# API Response is:{
 # Traceback (most recent call last):
 #     "errorCode": 2,
 #     "message": "Insufficient storage capacity."
