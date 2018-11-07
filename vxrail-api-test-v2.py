@@ -100,16 +100,19 @@ def call_api(url, method):
         # we get the request_id and process it in order to track it
 
         if method == 'POST':
+
             job_id = response.json()
-            req_id = job_id.get('request_id')
+            # exclude POST requests that fail for x and y reasons like storage full
+            if job_id is not None:
+                req_id = job_id.get('request_id')
 
-            resp_get_id = requests.request('GET', 'https://' + selection + '/rest/vxm/v1/requests/' + req_id,
-                                           verify=False,
-                                           auth=creds)
+                resp_get_id = requests.request('GET', 'https://' + selection + '/rest/vxm/v1/requests/' + req_id,
+                                               verify=False,
+                                               auth=creds)
 
-            beauty = jsbeautifier.beautify(resp_get_id.text)
+                beauty = jsbeautifier.beautify(resp_get_id.text)
 
-            print('''\t
+                print('''\t
             ##################################\t
             # The Status of the API CALL is: #\t
             ##################################\t
@@ -117,8 +120,9 @@ def call_api(url, method):
 
         return result
 
-    except:
-        print('Error Fetching Information for one VXRM VM:' + str(ip))
+
+    except Exception  as err:
+        print(err)
 
 
 #
@@ -224,3 +228,29 @@ main()
 # 7 - Selection Menu for the VXRMs we want to query. DONE !
 # 8 - Add an option to run the same API on ALL the VXRM.
 # 9 - Need to fix the POST request on call_api as we now have multiple vxrail choice. DONE !
+# 10 - improve error handling on POTS request like this one. DONE
+
+
+# What API would you like to call? 3
+# API Call https://172.168.10.150/rest/vxm/v1/support/logs Submitted and Return Code is: 500
+# API Response is: {
+# Traceback (most recent call last):
+#     "errorCode": 2,
+#     "message": "Insufficient storage capacity."
+#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 106, in call_api
+# }
+#     resp_get_id = requests.request('GET', 'https://' + selection + '/rest/vxm/v1/requests/' + req_id,
+# TypeError: can only concatenate str (not "NoneType") to str
+#
+# During handling of the above exception, another exception occurred:
+#
+# Traceback (most recent call last):
+#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 213, in <module>
+#     main()
+#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 210, in main
+#     call_api(api, method)
+#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 121, in call_api
+#     print('Error Fetching Information for one VXRM VM:' + str(ip))
+# NameError: name 'ip' is not defined
+#
+# Process finished with exit code 1
