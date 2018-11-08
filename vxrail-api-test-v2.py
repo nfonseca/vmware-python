@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
 import sys
+
+# check the python version needed ro run the script
+
+if sys.version_info.major != 3:
+    print("This script requires Python version 3.x")
+    sys.exit(1)
+
 from pyVmomi import vim, vmodl
 from pyVim import connect
 import requests
@@ -254,3 +261,5 @@ main()
 # NameError: name 'ip' is not defined
 #
 # Process finished with exit code 1
+
+# 11 - Script should tell required version for python
