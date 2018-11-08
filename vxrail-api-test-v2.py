@@ -30,8 +30,11 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# Searches  all Vxrail Manager VMs registered in the DC and returns their IP
+# Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
+# should add an exception block when no VXRMs are found
+# include a counter for the size of the array of vxrm ip
+# if size is zero print no VXRM found
 
 def findvxrm():
     vxrmIPs = []
@@ -72,6 +75,13 @@ def endpoint_url(ip, api):
     endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
 
     return endpoint
+
+
+# Function that takes an argument and calls a set of API based on a list
+#
+
+api_list = ['system-health', 'system']
+
 
 # below function just needs to execute the API call and pass the parameters
 
@@ -194,21 +204,24 @@ def api_list(ip):
 
 
 def main():
-    global selection
-    vx = findvxrm()
-    #    selection = input('Select VxRail Manager to use: ')
-    #    print(vx)
-    for vxrm in vx:
-        print(f'VXRM Found with IP: {vxrm}')
+    while True:
+        global selection
+        vx = findvxrm()
+        #    selection = input('Select VxRail Manager to use: ')
+        #    print(vx)
+        for vxrm in vx:
+            print(f'VXRM Found with IP: {vxrm}')
 
-    selection = input('Type IP of VxRail Manager to Connect to: ')
-    if selection in vx:
-        print(vx.index(selection))
+        selection = input('Type IP of VxRail Manager to Connect to: ')
+        if selection in vx:
+            print(vx.index(selection))
 
-        print('Checking VxRail Manager: ', selection)
-        api = api_list(selection)
-        if api is not None:
-            call_api(api, method)
+            print('Checking VxRail Manager: ', selection)
+            api = api_list(selection)
+            if api is not None:
+                call_api(api, method)
+            else:
+                break
 
 
 main()
