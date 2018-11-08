@@ -4,8 +4,8 @@ import sys
 
 # check the python version needed ro run the script
 
-if sys.version_info.major != 3:
-    print("This script requires Python version 3.x")
+if sys.version_info.major != 3 or sys.version_info[1] < 6:
+    print("This script requires Python version 3.6")
     sys.exit(1)
 
 from pyVmomi import vim, vmodl
@@ -30,11 +30,8 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
+# Searches  all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
-# should add an exception block when no VXRMs are found
-# include a counter for the size of the array of vxrm ip
-# if size is zero print no VXRM found
 
 def findvxrm():
     vxrmIPs = []
@@ -75,13 +72,6 @@ def endpoint_url(ip, api):
     endpoint = 'https://{0}/rest/vxm/v1/{1}'.format(str(ip), str(api))
 
     return endpoint
-
-
-# Function that takes an argument and calls a set of API based on a list
-#
-
-api_list = ['system-health', 'system']
-
 
 # below function just needs to execute the API call and pass the parameters
 
@@ -129,7 +119,7 @@ def call_api(url, method):
 
 
     except Exception  as err:
-        print(err)
+        print('Error: ', err)
 
 
 #
