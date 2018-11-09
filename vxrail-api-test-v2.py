@@ -53,7 +53,7 @@ def findvxrm():
             print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
 
         else:
-            print(f'Found a Total of: {lenvxrmIPs} VxRail Manager VMs')
+            print(f'### Found a Total of: {lenvxrmIPs} VxRail Manager VMs ###\n')
     except:
 
         print('Error Calling Function findvxrm()')
@@ -196,7 +196,7 @@ def api_list(ip):
                 api = 'lcm/upgrade'
                 call = endpoint_url(ip, api)
                 method = 'POST'
-                parameters = None
+                parameters = {}
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
