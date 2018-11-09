@@ -157,6 +157,7 @@ def api_list(ip):
             2. System Info
             3. Support Logs
             4. Cluster Shutdown
+            5. VxRail Upgrade
 
             """)
 
@@ -191,6 +192,12 @@ def api_list(ip):
                 else:
                     parameters = {"dryrun": "false"}
                 break
+            elif ans == '5':  # POST Implementation
+                api = 'lcm/upgrade'
+                call = endpoint_url(ip, api)
+                method = 'POST'
+                parameters = None
+                break
             elif ans == '0':
                 print('\nExiting Program ...')
                 ans = None
@@ -207,22 +214,24 @@ def main():
     while True:
         global selection
         vx = findvxrm()
-        #    selection = input('Select VxRail Manager to use: ')
-        #    print(vx)
-        for vxrm in vx:
-            print(f'VXRM Found with IP: {vxrm}')
+        print('Continue ?')
+        cont = input('Type Y or N: ')
+        if cont == 'Y':
+            for vxrm in vx:
+                print(f'VXRM Found with IP: {vxrm}')
 
-        selection = input('Type IP of VxRail Manager to Connect to: ')
-        if selection in vx:
-            print(vx.index(selection))
+            selection = input('Type IP of VxRail Manager to Connect to: ')
+            if selection in vx:
+                print(vx.index(selection))
 
-            print('Checking VxRail Manager: ', selection)
-            api = api_list(selection)
-            if api is not None:
-                call_api(api, method)
-            else:
-                break
-
+                print('Checking VxRail Manager: ', selection)
+                api = api_list(selection)
+                if api is not None:
+                    call_api(api, method)
+                else:
+                    break
+        else:
+            sys.exit(1)
 
 main()
 
@@ -266,3 +275,4 @@ main()
 # Process finished with exit code 1
 
 # 11 - Script should tell required version for python
+# 12 - Upgrade
