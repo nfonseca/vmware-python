@@ -243,5 +243,5 @@ main()
 # todo 12 - Implement Upgrade API (upgrade bundle needs manual upload)
 # todo 13 - Improve Error handling on exception block for findvxrm()
 # todo 14 - Add argpase for vcenter creds
-# todo 15 - add a function to upload the logs from the VM where the scrip is executed
+# todo 15 - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # fixme test
