@@ -240,5 +240,8 @@ main()
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add an option to run the same API on ALL the VXRM.
 # todo 11 - Script should tell required version for python. Done
-# todo 12 - Upgrade
+# todo 12 - Implement Upgrade API (upgrade bundle needs manual upload)
+# todo 13 - Improve Error handling on exception block for findvxrm()
+# todo 14 - Add argpase for vcenter creds
+# todo 15 - add a function to upload the logs from the VM where the scrip is executed
 # fixme test
