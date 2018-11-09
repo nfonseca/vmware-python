@@ -236,43 +236,9 @@ def main():
 main()
 
 # Things to improve/implement
-# 1- Provide a Selection Menu for the APIs that we are going to run. DONE !
-# 2 - List the VXRMs we want to run 1 by 1 or ALL
-# 3 - Add display of whats going on. DONE !
-# 4 - How to deal with GET and POST. DONE !
-# 5 - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
-# 4 - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# 5 - Provide options for some arguments used in some APIs ( Cluster Shutdown Dry Run for example) DONE
-# 6 - Program should always continue after an execution so we can choose other APIs
-# 7 - Selection Menu for the VXRMs we want to query. DONE !
-# 8 - Add an option to run the same API on ALL the VXRM.
-# 9 - Need to fix the POST request on call_api as we now have multiple vxrail choice. DONE !
-# 10 - improve error handling on POTS request like this one. DONE
-
-
-# What API would you like to call? 3
-# API Call https://172.168.10.150/rest/vxm/v1/support/logs Submitted and Return Code is: 500
-# API Response is:{
-# Traceback (most recent call last):
-#     "errorCode": 2,
-#     "message": "Insufficient storage capacity."
-#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 106, in call_api
-# }
-#     resp_get_id = requests.request('GET', 'https://' + selection + '/rest/vxm/v1/requests/' + req_id,
-# TypeError: can only concatenate str (not "NoneType") to str
-#
-# During handling of the above exception, another exception occurred:
-#
-# Traceback (most recent call last):
-#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 213, in <module>
-#     main()
-#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 210, in main
-#     call_api(api, method)
-#   File "C:/Users/Nelson.VXRAIL-JUMP-NEL/PycharmProjects/vmware-python/vxrail-api-calls-v2.py", line 121, in call_api
-#     print('Error Fetching Information for one VXRM VM:' + str(ip))
-# NameError: name 'ip' is not defined
-#
-# Process finished with exit code 1
-
-# 11 - Script should tell required version for python
-# 12 - Upgrade
+# todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
+# todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
+# todo - Add an option to run the same API on ALL the VXRM.
+# todo 11 - Script should tell required version for python. Done
+# todo 12 - Upgrade
+# fixme test
