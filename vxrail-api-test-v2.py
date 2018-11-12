@@ -14,6 +14,7 @@ import requests
 import jsbeautifier
 import subprocess
 import platform
+import os
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -32,11 +33,8 @@ si = connect.SmartConnectNoSSL(host='172.168.10.149',
 print(si.serverClock)
 
 
-# Seraches  all Vxrail Manager VMs registered in the DC and returns their IP
+# Search all Vxrail Manager VMs registered in the DC and returns their IP
 # in order to pass as input for the loop to query the APIs.
-# should add an exception block when no VXRMs are found
-# include a counter for the size of the array of vxrm ip
-# if size is zero print no VXRM found
 
 def findvxrm():
     vxrmIPs = []
@@ -51,8 +49,12 @@ def findvxrm():
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
 
+        containerVM.Destroy()
+
         if len(vxrmIPs) == 0:
-            print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
+            #            print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
+            raise RuntimeError('No VMs VxRail Manager Found in Datacenter: Have they been renamed ?')
+
 
         else:
             print(f'### Found a Total of: {lenvxrmIPs} VxRail Manager VMs ###\n')
@@ -61,6 +63,7 @@ def findvxrm():
     except Exception  as err:
 
         print('Error in findvxrm() :', err)
+        sys.exit(1)
 
     return vxrmIPs
 
@@ -182,7 +185,7 @@ def api_list(ip):
                 api = 'support/logs'
                 call = endpoint_url(ip, api)
                 method = 'POST'
-                parameters = {"types": ["vxm"]}
+                parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
                 break
             elif ans == '4':  # POST Implementation
                 api = 'cluster/shutdown'
@@ -219,14 +222,14 @@ def api_list(ip):
 
 # helper function to upload upgrade composite bundle to VxRM
 def transfer_bundle(vxrmip=None, file=None, dest='/data/store2'):
-    if platform.system() == 'Windows'
+    if platform.system() == 'Windows':
         p = subprocess.Popen(['pscp', 'C:\file.txt', 'mystic@172.168.10.150:/tmp'])
         sts = os.waitpid(p.pid, 0)
 
     return None
 
 def main():
-    transfer_bundle()
+    #    transfer_bundle()
     while True:
         global selection
         vx = findvxrm()
@@ -255,8 +258,9 @@ main()
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add an option to run the same API on ALL the VXRM.
-# todo - Script should tell required version for python. Done
 # todo - Implement Upgrade API (upgrade bundle needs manual upload)
 # todo - Add argpase for vcenter creds
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
+# todo - close VC connection on program exit
+# todo - add a function to connect to VC and run that in main
 # fixme test
