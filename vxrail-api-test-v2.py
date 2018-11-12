@@ -12,6 +12,8 @@ from pyVmomi import vim, vmodl
 from pyVim import connect
 import requests
 import jsbeautifier
+import subprocess
+import platform
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -54,9 +56,11 @@ def findvxrm():
 
         else:
             print(f'### Found a Total of: {lenvxrmIPs} VxRail Manager VMs ###\n')
-    except:
 
-        print('Error Calling Function findvxrm()')
+
+    except Exception  as err:
+
+        print('Error in findvxrm() :', err)
 
     return vxrmIPs
 
@@ -196,7 +200,10 @@ def api_list(ip):
                 api = 'lcm/upgrade'
                 call = endpoint_url(ip, api)
                 method = 'POST'
-                parameters = {}
+                parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
+                              "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
+                              "vcenter": {
+                                  "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
@@ -210,7 +217,16 @@ def api_list(ip):
     return call
 
 
+# helper function to upload upgrade composite bundle to VxRM
+def transfer_bundle(vxrmip=None, file=None, dest='/data/store2'):
+    if platform.system() == 'Windows'
+        p = subprocess.Popen(['pscp', 'C:\file.txt', 'mystic@172.168.10.150:/tmp'])
+        sts = os.waitpid(p.pid, 0)
+
+    return None
+
 def main():
+    transfer_bundle()
     while True:
         global selection
         vx = findvxrm()
@@ -239,9 +255,8 @@ main()
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add an option to run the same API on ALL the VXRM.
-# todo 11 - Script should tell required version for python. Done
-# todo 12 - Implement Upgrade API (upgrade bundle needs manual upload)
-# todo 13 - Improve Error handling on exception block for findvxrm()
-# todo 14 - Add argpase for vcenter creds
-# todo 15 - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
+# todo - Script should tell required version for python. Done
+# todo - Implement Upgrade API (upgrade bundle needs manual upload)
+# todo - Add argpase for vcenter creds
+# todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # fixme test
