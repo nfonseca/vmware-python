@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+
 import sys
 
 # check the python version needed ro run the script
@@ -15,6 +16,8 @@ import jsbeautifier
 import subprocess
 import platform
 import os
+import argparse
+import getpass
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -22,15 +25,16 @@ if not sys.warnoptions:
 
     warnings.simplefilter("ignore")
 
+
 ###########################
 # Establish VC Connection #
 ###########################
 
-si = connect.SmartConnectNoSSL(host='172.168.10.149',
-                               user='administrator@vsphere.local',
-                               pwd='VxR@il1!')
-
-print(si.serverClock)
+# si = connect.SmartConnectNoSSL(host='172.168.10.149',
+#                                user='administrator@vsphere.local',
+#                                pwd='VxR@il1!')
+#
+# print(si.serverClock)
 
 
 # Search all Vxrail Manager VMs registered in the DC and returns their IP
@@ -41,7 +45,7 @@ def findvxrm():
 
     try:
 
-        content = si.RetrieveServiceContent()
+        #    content = si.RetrieveServiceContent()
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
 
         for vm in containerVM.view:
@@ -210,12 +214,13 @@ def api_list(ip):
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
+                sys.exit(1)
                 ans = None
             else:
                 print('\n Not Valid Choice Try again')
 
-    except:
-        print('Error on api_list()')
+    except Exception  as err:
+        print('Error: ', err)
 
     return call
 
@@ -228,29 +233,69 @@ def transfer_bundle(vxrmip=None, file=None, dest='/data/store2'):
 
     return None
 
+
+def GetArgs():
+    """
+    Supports the command-line arguments listed below.
+    """
+
+    parser = argparse.ArgumentParser(description='Process args for connecting to vCenter')
+    parser.add_argument('-v', '--vc', required=True, action='store', help='vCenter')
+    parser.add_argument('-u', '--user', required=True, action='store', help='vCenter Administrator')
+    parser.add_argument('-p', '--password', required=False, action='store', help='Password')
+    args = parser.parse_args()
+    return args
+
+
 def main():
     #    transfer_bundle()
-    while True:
-        global selection
-        vx = findvxrm()
-        print('Continue ?')
-        cont = input('Type Y or N: ')
-        if cont == 'Y':
-            for vxrm in vx:
-                print(f'VXRM Found with IP: {vxrm}')
 
-            selection = input('Type IP of VxRail Manager to Connect to: ')
-            if selection in vx:
-                print(vx.index(selection))
+    global content
+    global si
+    args = GetArgs()
+    if args.password:
+        password = args.password
+    else:
+        password = getpass.getpass(prompt='Enter password for host %s and user %s: ' % (args.vc, args.user))
 
-                print('Checking VxRail Manager: ', selection)
-                api = api_list(selection)
-                if api is not None:
-                    call_api(api, method)
-                else:
-                    break
-        else:
-            sys.exit(1)
+    try:
+
+        # connection string
+
+        si = connect.SmartConnectNoSSL(host=args.vc,
+                                       user=args.user,
+                                       pwd=password)
+
+        content = si.RetrieveServiceContent()
+
+        while True:
+            global selection
+            vx = findvxrm()
+            print('Continue ?')
+            cont = input('Type Y or N: ')
+            if cont == 'Y':
+                for vxrm in vx:
+                    print(f'VXRM Found with IP: {vxrm}')
+
+                selection = input('Type IP of VxRail Manager to Connect to: ')
+                if selection in vx:
+                    print(vx.index(selection))
+
+                    print('Checking VxRail Manager: ', selection)
+                    api = api_list(selection)
+                    if api is not None:
+                        call_api(api, method)
+                    else:
+                        break
+            else:
+                print('\nExiting Program ...')
+                sys.exit(1)
+
+
+    except Exception  as err:
+
+        print('Error: ', err)
+
 
 main()
 
@@ -263,4 +308,5 @@ main()
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - close VC connection on program exit
 # todo - add a function to connect to VC and run that in main
+# todo - check power state of vxrm
 # fixme test
