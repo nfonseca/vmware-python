@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import sys
 
 # check the python version needed ro run the script
@@ -26,26 +25,11 @@ if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
 
-###########################
-# Establish VC Connection #
-###########################
-
-# si = connect.SmartConnectNoSSL(host='172.168.10.149',
-#                                user='administrator@vsphere.local',
-#                                pwd='VxR@il1!')
-#
-# print(si.serverClock)
-
-
-# Search all Vxrail Manager VMs registered in the DC and returns their IP
-# in order to pass as input for the loop to query the APIs.
-
 def findvxrm():
     vxrmIPs = []
 
     try:
 
-        #    content = si.RetrieveServiceContent()
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
 
         for vm in containerVM.view:
@@ -56,7 +40,6 @@ def findvxrm():
         containerVM.Destroy()
 
         if len(vxrmIPs) == 0:
-            #            print('No VMs VxRail Manager Found in Datacenter: Have they been Renamed ?')
             raise RuntimeError('No VMs VxRail Manager Found in Datacenter: Have they been renamed ?')
 
 
@@ -89,11 +72,6 @@ def endpoint_url(ip, api):
 
 
 # Function that takes an argument and calls a set of API based on a list
-#
-
-api_list = ['system-health', 'system']
-
-
 # below function just needs to execute the API call and pass the parameters
 
 def call_api(url, method):
@@ -143,16 +121,12 @@ def call_api(url, method):
         print('Error: ', err)
 
 
-#
 # function to deal with all the different APIs for VXRM
 # needs to deal with POST and GET APIs ....
 # this is to replace the need for the user to manually write the api name
 # For POST requested we will also have to sort out the details
 # we also need to take in account the vxrail manager version as not all APIs are available
-# the following function needs to be redesigned. It needs to deal with POST/GET methods and return
-# something useful for the call_api() function. So all APIs should be listed here
-# shall we use dictionaries ? then we pass the dic values to the call api function ?
-# https://medium.com/@anthonypjshaw/python-requests-deep-dive-a0a5c5c1e093
+
 
 def api_list(ip):
     global method
@@ -215,7 +189,6 @@ def api_list(ip):
             elif ans == '0':
                 print('\nExiting Program ...')
                 sys.exit(1)
-                ans = None
             else:
                 print('\n Not Valid Choice Try again')
 
