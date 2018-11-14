@@ -132,6 +132,7 @@ def api_list(ip):
     global method
     global parameters
     call = None
+    api = None
 
     try:
         ans = True
@@ -195,7 +196,7 @@ def api_list(ip):
     except Exception  as err:
         print('Error: ', err)
 
-    return call
+    return call, api
 
 
 # helper function to upload upgrade composite bundle to VxRM
@@ -223,9 +224,14 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-def run_same_api(api):
+
+def run_same_api():
     vxrails = findvxrm()
+    selected_api = api_list(vxrails[1])
+
     for vx in vxrails:
+        url = endpoint_url(vx, selected_api[1])
+        print(f'API Call Running is: {url}')
         call_api(url, method)
 
     return None
@@ -268,19 +274,17 @@ def main():
                     print(vx.index(selection))
 
                     print('Checking VxRail Manager: ', selection)
-                    api = api_list(selection)
+
+                    api = api_list(selection)[0]
+
                     if api is not None:
                         call_api(api, method)
                     else:
                         break
                 elif selection == 'all':
                     print('Put the code here to run the same API on all vxrail managers')
-                    vx = findvxrm()  # array with all vxrms
-                    for v in vx:
-                        api = api_list(
-                            v)  # this is not working. need a way to keep the API permanent for that run and just loop over all the nodes ...
-                        call_api(api,
-                                 method)  # as of now we need to repeat the choice multiple times for every rail. We just want the SAME API to be executed on all rails # function that takes as argument another function ? decorator ???? just to remove the selection part ...
+                    run_same_api()
+
             else:
                 print('\nExiting Program ...')
                 sys.exit(1)
@@ -296,8 +300,6 @@ main()
 # Things to improve/implement
 # MAJOR FEATURES
 
-
-# todo - Add an option to run the same API on ALL the VXRM.
 # todo - Add support for more APIs
 
 # MINOR FEATURES
@@ -307,4 +309,5 @@ main()
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - progress bar for long return times from POST calls
-# fixme test
+# todo - Improve call_api() to include the user and pass from args
+# todo - Improve the logging on the run_same_api(). Add try except block and Exceptions
