@@ -276,7 +276,7 @@ def main():
                     print('Put the code here to run the same API on all vxrail managers')
                     api = findvxrm()  # array with all vxrms
                     for vx in api:
-                        api = api_list(selection)
+                        api = api_list(vx)
                         call_api(api, method)
             else:
                 print('\nExiting Program ...')
