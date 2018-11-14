@@ -143,7 +143,6 @@ def api_list(ip):
             3. Support Logs
             4. Cluster Shutdown
             5. VxRail Upgrade
-
             """)
 
             ans = input('What API would you like to call? ')
@@ -220,6 +219,18 @@ def GetArgs():
     return args
 
 
+# Runs the same API across all the VXRM Identified
+# usually for GET methods
+
+def run_same_api(api):
+    vxrails = findvxrm()
+    for vx in vxrails:
+        call_api(url, method)
+
+    return None
+
+
+
 def main():
     #    transfer_bundle()
 
@@ -250,7 +261,8 @@ def main():
                 for vxrm in vx:
                     print(f'VXRM Found with IP: {vxrm}')
 
-                selection = input('Type IP of VxRail Manager to Connect to: ')
+                selection = input(
+                    'Type the IP of VxRail Manager to Connect to or type "all" to run the same API on ALL VxRail Managers : ')
                 if selection in vx:
                     print(vx.index(selection))
 
@@ -260,6 +272,8 @@ def main():
                         call_api(api, method)
                     else:
                         break
+                elif selection == 'all':
+                    print('Put the code here to run the same API on all vxrail managers')
             else:
                 print('\nExiting Program ...')
                 sys.exit(1)
@@ -273,13 +287,17 @@ def main():
 main()
 
 # Things to improve/implement
-# todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
-# todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
+# MAJOR FEATURES
+
+
 # todo - Add an option to run the same API on ALL the VXRM.
-# todo - Implement Upgrade API (upgrade bundle needs manual upload)
-# todo - Add argpase for vcenter creds
+# todo - Add support for more APIs
+
+# MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - close VC connection on program exit
-# todo - add a function to connect to VC and run that in main
 # todo - check power state of vxrm
+# todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
+# todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
+# todo - progress bar for long return times from POST calls
 # fixme test
