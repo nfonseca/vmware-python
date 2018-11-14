@@ -274,6 +274,10 @@ def main():
                         break
                 elif selection == 'all':
                     print('Put the code here to run the same API on all vxrail managers')
+                    api = findvxrm()  # array with all vxrms
+                    for vx in api:
+                        api = api_list(selection)
+                        call_api(api, method)
             else:
                 print('\nExiting Program ...')
                 sys.exit(1)
