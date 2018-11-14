@@ -146,6 +146,7 @@ def api_list(ip):
             """)
 
             ans = input('What API would you like to call? ')
+
             if ans == '1':
                 api = 'system-health'
                 call = endpoint_url(ip, api)
@@ -276,8 +277,10 @@ def main():
                     print('Put the code here to run the same API on all vxrail managers')
                     vx = findvxrm()  # array with all vxrms
                     for v in vx:
-                        api = api_list(v)
-                        call_api(api, method)
+                        api = api_list(
+                            v)  # this is not working. need a way to keep the API permanent for that run and just loop over all the nodes ...
+                        call_api(api,
+                                 method)  # as of now we need to repeat the choice multiple times for every rail. We just want the SAME API to be executed on all rails # function that takes as argument another function ? decorator ???? just to remove the selection part ...
             else:
                 print('\nExiting Program ...')
                 sys.exit(1)
