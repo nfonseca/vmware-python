@@ -26,6 +26,7 @@ if not sys.warnoptions:
 
 
 def findvxrm():
+
     vxrmIPs = []
 
     try:
@@ -129,6 +130,7 @@ def call_api(url, method):
 
 
 def api_list(ip):
+
     global method
     global parameters
     call = None
@@ -226,15 +228,22 @@ def GetArgs():
 
 
 def run_same_api():
+
     vxrails = findvxrm()
     selected_api = api_list(vxrails[1])
 
-    for vx in vxrails:
-        url = endpoint_url(vx, selected_api[1])
-        print(f'API Call Running is: {url}')
-        call_api(url, method)
+    try:
 
-    return None
+        for vx in vxrails:
+            url = endpoint_url(vx, selected_api[1])
+            print(f'API Call Running is: {url}')
+            call_api(url, method)
+
+    except Exception  as err:
+
+        print('Error: ', err)
+
+    return selected_api
 
 
 
@@ -269,7 +278,7 @@ def main():
                     print(f'VXRM Found with IP: {vxrm}')
 
                 selection = input(
-                    'Type the IP of VxRail Manager to Connect to or type "all" to run the same API on ALL VxRail Managers : ')
+                    'Type the IP of VxRM to Connect to or type "all" to run the same API on ALL VxRM : ')
                 if selection in vx:
                     print(vx.index(selection))
 
@@ -282,13 +291,11 @@ def main():
                     else:
                         break
                 elif selection == 'all':
-                    print('Put the code here to run the same API on all vxrail managers')
                     run_same_api()
 
             else:
                 print('\nExiting Program ...')
                 sys.exit(1)
-
 
     except Exception  as err:
 
@@ -311,3 +318,4 @@ main()
 # todo - progress bar for long return times from POST calls
 # todo - Improve call_api() to include the user and pass from args
 # todo - Improve the logging on the run_same_api(). Add try except block and Exceptions
+# todo - The answer selection should be a list or dictionary in pi_list(ip) rather than print statements. Could reuse the values later to printout the API name in a Friendly way
