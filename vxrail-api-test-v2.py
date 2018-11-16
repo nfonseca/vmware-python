@@ -17,6 +17,7 @@ import platform
 import os
 import argparse
 import getpass
+import atexit
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -278,6 +279,9 @@ def main():
                                        pwd=password)
 
         content = si.RetrieveServiceContent()
+        # we close the vc connection
+        atexit.register(connect.Disconnect, si)
+
 
         while True:
             global selection
@@ -322,7 +326,6 @@ main()
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - close VC connection on program exit
 # todo - check power state of vxrm
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
