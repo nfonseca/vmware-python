@@ -136,6 +136,17 @@ def api_list(ip):
     call = None
     api = None
 
+    api_choices = {
+        "Exit/Quit": "0",
+        "System Health": '1',
+        "System Info": '2',
+        "Support Logs": "3",
+        "Cluster Shutdown": '4',
+        "VxRail Upgrade Info": '5'
+    }
+
+
+
     try:
         ans = True
         while ans:
