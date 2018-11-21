@@ -195,7 +195,7 @@ def api_list(ip):
                 print('\n Not Valid Choice Try again')
 
     except Exception  as err:
-        print('Error: ', err)
+        print('Error in api_list(): ', err)
 
     return call, api, method
 
@@ -245,66 +245,92 @@ def run_same_api():
 
 
 def system_health(ip):
+    call = None
     api = 'system-health'
-    call = endpoint_url(ip, api)
     method = 'GET'
     parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in system_health(): ', err)
 
     return call, api, method, parameters
 
 
 def system_info(ip):
+    call = None
     api = 'system'
-    call = endpoint_url(ip, api)
     method = 'GET'
     parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in system_info(): ', err)
 
     return call, api, method, parameters
 
 
 def support_logs(ip):
+    call = None
     api = 'support/logs'
-    call = endpoint_url(ip, api)
     method = 'POST'
     parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in support_logs(): ', err)
 
     return call, api, method, parameters
 
 
 def cluster_shutdown(ip):
+    call = None
     api = 'cluster/shutdown'
-    call = endpoint_url(ip, api)
     method = 'POST'
     param = input('''Select Operation Type:
     1 - Dry Run Only
-    2 - Cluster Shutdown''')
+    2 - Cluster Shutdown\n''')
     if param == '1':
         parameters = {"dryrun": "true"}
     else:
         parameters = {"dryrun": "false"}
 
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in cluster_shutdown(): ', err)
+
     return call, api, method, parameters
 
 
 def lcm_upgrade(ip):
+    call = None
     api = 'lcm/upgrade'
-    call = endpoint_url(ip, api)
     method = 'POST'
     parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
                   "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
                   "vcenter": {
                       "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in lcm_upgrade(): ', err)
+
     return call, api, method, parameters
 
 
 def main():
-    #    transfer_bundle()
-
     global content
     global si
-    global method
-
-    global parameters
 
     args = GetArgs()
     if args.password:
@@ -336,18 +362,13 @@ def main():
                 selection = input(
                     'Type the IP of VxRM to Connect to or type "all" to run the same API on ALL VxRM : ')
                 if selection in vx:
-                    print(vx.index(selection))
 
                     print('Checking VxRail Manager: ', selection)
 
                     api = api_list(selection)
-                    print(f'This is selection {selection}')
-                    print(f'This is api return: {api}')
-                    print(f'This is api from selection: {api}')
 
                     if api is not None:
-                        print(f'This is var api: {api[0]}')
-                        print(f'This is var method: {api[2]}')
+
                         call_api(api[0], api[2])
 
                     else:
