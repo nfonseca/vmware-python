@@ -27,7 +27,6 @@ if not sys.warnoptions:
 
 
 def findvxrm():
-
     vxrmIPs = []
 
     try:
@@ -131,7 +130,6 @@ def call_api(url, method):
 
 
 def api_list(ip):
-
     global method
     global parameters
     call = None
@@ -145,8 +143,6 @@ def api_list(ip):
         "Cluster Shutdown": '4',
         "VxRail Upgrade Info": '5'
     }
-
-
 
     try:
         ans = True
@@ -240,7 +236,6 @@ def GetArgs():
 
 
 def run_same_api():
-
     vxrails = findvxrm()
     selected_api = api_list(vxrails[1])
 
@@ -256,7 +251,6 @@ def run_same_api():
         print('Error: ', err)
 
     return selected_api
-
 
 
 def main():
@@ -281,7 +275,6 @@ def main():
         content = si.RetrieveServiceContent()
         # we close the vc connection
         atexit.register(connect.Disconnect, si)
-
 
         while True:
             global selection
