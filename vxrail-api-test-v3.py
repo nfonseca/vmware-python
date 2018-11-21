@@ -18,6 +18,8 @@ import os
 import argparse
 import getpass
 import atexit
+import progressbar
+import time
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -225,7 +227,7 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-# fixme - this function may need improvements
+# fixme - this function may need improvements. Some bugs in running POST requests
 def run_same_api():
     vxrails = findvxrm()
     selected_api = api_list(vxrails[0])
