@@ -138,7 +138,10 @@ def api_list(ip):
     api_choices = {
         "Exit/Quit": "0",
         "System Health": '1',
-        "System Info": '2'
+        "System Info": '2',
+        "Support Logs": '3',
+        "Cluster Shutdown": '4',
+        "LCM Upgrade": '5',
     }
 
     try:
@@ -158,7 +161,32 @@ def api_list(ip):
                 parameters = res[3]
                 break
             elif ans == '2':
-                system_info(ip)
+                res = system_info(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '3':
+                res = support_logs(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '4':
+                res = cluster_shutdown(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '5':
+                res = lcm_upgrade(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
@@ -197,7 +225,7 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-
+# fixme - this function is broken since the broke down of the APIs
 def run_same_api():
     vxrails = findvxrm()
     selected_api = api_list(vxrails[1])
@@ -233,6 +261,40 @@ def system_info(ip):
 
     return call, api, method, parameters
 
+
+def support_logs(ip):
+    api = 'support/logs'
+    call = endpoint_url(ip, api)
+    method = 'POST'
+    parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
+
+    return call, api, method, parameters
+
+
+def cluster_shutdown(ip):
+    api = 'cluster/shutdown'
+    call = endpoint_url(ip, api)
+    method = 'POST'
+    param = input('''Select Operation Type:
+    1 - Dry Run Only
+    2 - Cluster Shutdown''')
+    if param == '1':
+        parameters = {"dryrun": "true"}
+    else:
+        parameters = {"dryrun": "false"}
+
+    return call, api, method, parameters
+
+
+def lcm_upgrade(ip):
+    api = 'lcm/upgrade'
+    call = endpoint_url(ip, api)
+    method = 'POST'
+    parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
+                  "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
+                  "vcenter": {
+                      "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+    return call, api, method, parameters
 
 
 def main():
