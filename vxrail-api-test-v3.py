@@ -225,21 +225,21 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-# fixme - this function is broken since the broke down of the APIs
+# fixme - this function may need improvements
 def run_same_api():
     vxrails = findvxrm()
-    selected_api = api_list(vxrails[1])
+    selected_api = api_list(vxrails[0])
 
     try:
 
         for vx in vxrails:
             url = endpoint_url(vx, selected_api[1])
             print(f'API Call Running is: {url}')
-            call_api(url, method)
+            call_api(url, selected_api[2])
 
     except Exception  as err:
 
-        print('Error: ', err)
+        print('Error in run_same_api(): ', err)
 
     return selected_api
 
