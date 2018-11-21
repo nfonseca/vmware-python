@@ -119,7 +119,7 @@ def call_api(url, method):
 
 
     except Exception  as err:
-        print('Error: ', err)
+        print('Error in call_api(): ', err)
 
 
 # function to deal with all the different APIs for VXRM
@@ -138,64 +138,27 @@ def api_list(ip):
     api_choices = {
         "Exit/Quit": "0",
         "System Health": '1',
-        "System Info": '2',
-        "Support Logs": "3",
-        "Cluster Shutdown": '4',
-        "VxRail Upgrade Info": '5'
+        "System Info": '2'
     }
 
     try:
         ans = True
         while ans:
-            print("""
-            0. Exit/Quit
-            1. System Health
-            2. System Info
-            3. Support Logs
-            4. Cluster Shutdown
-            5. VxRail Upgrade
-            """)
+
+            for k, v in api_choices.items():
+                print(v, k)
 
             ans = input('What API would you like to call? ')
 
             if ans == '1':
-                api = 'system-health'
-                call = endpoint_url(ip, api)
-                method = 'GET'
-                parameters = None
+                res = system_health(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
             elif ans == '2':
-                api = 'system'
-                call = endpoint_url(ip, api)
-                method = 'GET'
-                parameters = None
-                break
-            elif ans == '3':  # POST Implementation
-                api = 'support/logs'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
-                break
-            elif ans == '4':  # POST Implementation
-                api = 'cluster/shutdown'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                param = input('''Select Operation Type:
-                1 - Dry Run Only
-                2 - Cluster Shutdown''')
-                if param == '1':
-                    parameters = {"dryrun": "true"}
-                else:
-                    parameters = {"dryrun": "false"}
-                break
-            elif ans == '5':  # POST Implementation
-                api = 'lcm/upgrade'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
-                              "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
-                              "vcenter": {
-                                  "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+                system_info(ip)
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
@@ -206,7 +169,7 @@ def api_list(ip):
     except Exception  as err:
         print('Error: ', err)
 
-    return call, api
+    return call, api, method
 
 
 # helper function to upload upgrade composite bundle to VxRM
@@ -253,11 +216,34 @@ def run_same_api():
     return selected_api
 
 
+def system_health(ip):
+    api = 'system-health'
+    call = endpoint_url(ip, api)
+    method = 'GET'
+    parameters = None
+
+    return call, api, method, parameters
+
+
+def system_info(ip):
+    api = 'system'
+    call = endpoint_url(ip, api)
+    method = 'GET'
+    parameters = None
+
+    return call, api, method, parameters
+
+
+
 def main():
     #    transfer_bundle()
 
     global content
     global si
+    global method
+
+    global parameters
+
     args = GetArgs()
     if args.password:
         password = args.password
@@ -292,10 +278,16 @@ def main():
 
                     print('Checking VxRail Manager: ', selection)
 
-                    api = api_list(selection)[0]
+                    api = api_list(selection)
+                    print(f'This is selection {selection}')
+                    print(f'This is api return: {api}')
+                    print(f'This is api from selection: {api}')
 
                     if api is not None:
-                        call_api(api, method)
+                        print(f'This is var api: {api[0]}')
+                        print(f'This is var method: {api[2]}')
+                        call_api(api[0], api[2])
+
                     else:
                         break
                 elif selection == 'all':
@@ -307,7 +299,7 @@ def main():
 
     except Exception  as err:
 
-        print('Error: ', err)
+        print('Error in main(): ', err)
 
 
 main()
