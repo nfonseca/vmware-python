@@ -100,6 +100,8 @@ def call_api(url, method):
 
         if method == 'POST':
 
+            print('Waiting to get the Response from the Request ...\n')
+
             job_id = response.json()
             # exclude POST requests that fail for x and y reasons like storage full
             if job_id is not None:
