@@ -26,8 +26,10 @@ if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
 
+# todo - create a dictionary with IP of VXRM and host wher eits located
 def findvxrm():
     vxrmIPs = []
+    vxrailappl = {}
 
     try:
 
@@ -37,6 +39,8 @@ def findvxrm():
             if vm.name == 'VxRail Manager':
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
+
+                vxrailappl[vm.summary.guest.ipAddress] = vm.summary.runtime.host.name
 
         containerVM.Destroy()
 
@@ -53,7 +57,7 @@ def findvxrm():
         print('Error in findvxrm() :', err)
         sys.exit(1)
 
-    return vxrmIPs
+    return vxrailappl
 
 
 # Function to modify the URL for the query API.
@@ -98,6 +102,8 @@ def call_api(url, method):
 
         if method == 'POST':
 
+            print('Waiting to get the Response from the Request ...\n')
+
             job_id = response.json()
             # exclude POST requests that fail for x and y reasons like storage full
             if job_id is not None:
@@ -119,7 +125,7 @@ def call_api(url, method):
 
 
     except Exception  as err:
-        print('Error: ', err)
+        print('Error in call_api(): ', err)
 
 
 # function to deal with all the different APIs for VXRM
@@ -139,63 +145,54 @@ def api_list(ip):
         "Exit/Quit": "0",
         "System Health": '1',
         "System Info": '2',
-        "Support Logs": "3",
+        "Support Logs": '3',
         "Cluster Shutdown": '4',
-        "VxRail Upgrade Info": '5'
+        "LCM Upgrade": '5',
     }
 
     try:
         ans = True
         while ans:
-            print("""
-            0. Exit/Quit
-            1. System Health
-            2. System Info
-            3. Support Logs
-            4. Cluster Shutdown
-            5. VxRail Upgrade
-            """)
 
-            ans = input('What API would you like to call? ')
+            for k, v in api_choices.items():
+                print(v, k)
+
+            ans = input('''\nWhat API would you like to call?\nType your Choice: ''')
 
             if ans == '1':
-                api = 'system-health'
-                call = endpoint_url(ip, api)
-                method = 'GET'
-                parameters = None
+                res = system_health(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
             elif ans == '2':
-                api = 'system'
-                call = endpoint_url(ip, api)
-                method = 'GET'
-                parameters = None
+                res = system_info(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
-            elif ans == '3':  # POST Implementation
-                api = 'support/logs'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
+            elif ans == '3':
+                res = support_logs(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
-            elif ans == '4':  # POST Implementation
-                api = 'cluster/shutdown'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                param = input('''Select Operation Type:
-                1 - Dry Run Only
-                2 - Cluster Shutdown''')
-                if param == '1':
-                    parameters = {"dryrun": "true"}
-                else:
-                    parameters = {"dryrun": "false"}
+            elif ans == '4':
+                res = cluster_shutdown(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
-            elif ans == '5':  # POST Implementation
-                api = 'lcm/upgrade'
-                call = endpoint_url(ip, api)
-                method = 'POST'
-                parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
-                              "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
-                              "vcenter": {
-                                  "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+            elif ans == '5':
+                res = lcm_upgrade(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
                 break
             elif ans == '0':
                 print('\nExiting Program ...')
@@ -204,9 +201,9 @@ def api_list(ip):
                 print('\n Not Valid Choice Try again')
 
     except Exception  as err:
-        print('Error: ', err)
+        print('Error in api_list(): ', err)
 
-    return call, api
+    return call, api, method
 
 
 # helper function to upload upgrade composite bundle to VxRM
@@ -234,30 +231,111 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-
 def run_same_api():
     vxrails = findvxrm()
-    selected_api = api_list(vxrails[1])
+    selected_api = api_list(next(iter(
+        vxrails)))  # we need just to pass an IP to api_list to construct the selection list for the available API's
 
     try:
 
         for vx in vxrails:
             url = endpoint_url(vx, selected_api[1])
             print(f'API Call Running is: {url}')
-            call_api(url, method)
+            call_api(url, selected_api[2])
 
     except Exception  as err:
 
-        print('Error: ', err)
+        print('Error in run_same_api(): ', err)
 
     return selected_api
 
 
-def main():
-    #    transfer_bundle()
+def system_health(ip):
+    call = None
+    api = 'system-health'
+    method = 'GET'
+    parameters = None
 
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in system_health(): ', err)
+
+    return call, api, method, parameters
+
+
+def system_info(ip):
+    call = None
+    api = 'system'
+    method = 'GET'
+    parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in system_info(): ', err)
+
+    return call, api, method, parameters
+
+
+def support_logs(ip):
+    call = None
+    api = 'support/logs'
+    method = 'POST'
+    parameters = {"types": ["vxm", "vcenter", "esxi", "idrac", "ptagent"]}
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in support_logs(): ', err)
+
+    return call, api, method, parameters
+
+
+def cluster_shutdown(ip):
+    call = None
+    api = 'cluster/shutdown'
+    method = 'POST'
+    param = input('''Select Operation Type:\n1 - Dry Run Only\n2 - Cluster Shutdown\nType your Choice: ''')
+    if param == '1':
+        parameters = {"dryrun": "true"}
+    else:
+        parameters = {"dryrun": "false"}
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in cluster_shutdown(): ', err)
+
+    return call, api, method, parameters
+
+
+def lcm_upgrade(ip):
+    call = None
+    api = 'lcm/upgrade'
+    method = 'POST'
+    parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
+                  "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
+                  "vcenter": {
+                      "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in lcm_upgrade(): ', err)
+
+    return call, api, method, parameters
+
+
+def main():
     global content
     global si
+
     args = GetArgs()
     if args.password:
         password = args.password
@@ -282,20 +360,21 @@ def main():
             print('Continue ?')
             cont = input('Type Y or N: ')
             if cont == 'Y':
-                for vxrm in vx:
-                    print(f'VXRM Found with IP: {vxrm}')
+                for vxrm_ip, esxi in vx.items():
+                    print(f'VXRM Found with IP: {vxrm_ip} running on ESXi: {esxi} \n')
 
                 selection = input(
                     'Type the IP of VxRM to Connect to or type "all" to run the same API on ALL VxRM : ')
                 if selection in vx:
-                    print(vx.index(selection))
 
                     print('Checking VxRail Manager: ', selection)
 
-                    api = api_list(selection)[0]
+                    api = api_list(selection)
 
                     if api is not None:
-                        call_api(api, method)
+
+                        call_api(api[0], api[2])
+
                     else:
                         break
                 elif selection == 'all':
@@ -307,7 +386,7 @@ def main():
 
     except Exception  as err:
 
-        print('Error: ', err)
+        print('Error in main(): ', err)
 
 
 main()
@@ -316,14 +395,9 @@ main()
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
-# todo - Break Down all the API calls to small functions that are called by a main one. http://openbookproject.net/pybiblio/tips/wilson/dictionaryMenus.php
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - check power state of vxrm
+# todo - check power state of VxRM
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# todo - progress bar for long return times from POST calls
-# todo - Improve call_api() to include the user and pass from args
-# todo - Improve the logging on the run_same_api(). Add try except block and Exceptions
-# todo - The answer selection should be a list or dictionary in pi_list(ip) rather than print statements. Could reuse the values later to printout the API name in a Friendly way
