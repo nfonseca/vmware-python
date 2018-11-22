@@ -28,8 +28,10 @@ if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
 
+# todo - create a dictionary with IP of VXRM and host wher eits located
 def findvxrm():
     vxrmIPs = []
+    vxrailappl = {}
 
     try:
 
@@ -39,6 +41,8 @@ def findvxrm():
             if vm.name == 'VxRail Manager':
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
+
+                vxrailappl[vm.summary.guest.ipAddress] = vm.summary.runtime.host.name
 
         containerVM.Destroy()
 
@@ -55,7 +59,7 @@ def findvxrm():
         print('Error in findvxrm() :', err)
         sys.exit(1)
 
-    return vxrmIPs
+    return vxrailappl
 
 
 # Function to modify the URL for the query API.
@@ -229,7 +233,7 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-# fixme - this function may need improvements. Some bugs in running POST requests
+# fixme - this function is now broken since we used dict for findvxrm
 def run_same_api():
     vxrails = findvxrm()
     selected_api = api_list(vxrails[0])
@@ -360,8 +364,8 @@ def main():
             print('Continue ?')
             cont = input('Type Y or N: ')
             if cont == 'Y':
-                for vxrm in vx:
-                    print(f'VXRM Found with IP: {vxrm}')
+                for vxrm_ip, esxi in vx.items():
+                    print(f'VXRM Found with IP: {vxrm_ip} running on ESXi: {esxi} \n')
 
                 selection = input(
                     'Type the IP of VxRM to Connect to or type "all" to run the same API on ALL VxRM : ')
@@ -399,10 +403,8 @@ main()
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - check power state of vxrm
+# todo - check power state of VxRM
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# todo - progress bar for long return times from POST calls
-# todo - Improve call_api() to include the user and pass from args
 # todo - Improve the logging on the run_same_api(). Add try except block and Exceptions
 # todo - The answer selection should be a list or dictionary in pi_list(ip) rather than print statements. Could reuse the values later to printout the API name in a Friendly way
