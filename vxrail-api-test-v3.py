@@ -157,7 +157,7 @@ def api_list(ip):
             for k, v in api_choices.items():
                 print(v, k)
 
-            ans = input('What API would you like to call? ')
+            ans = input('''\nWhat API would you like to call?\nType your Choice: ''')
 
             if ans == '1':
                 res = system_health(ip)
@@ -231,10 +231,10 @@ def GetArgs():
 # Runs the same API across all the VXRM Identified
 # usually for GET methods
 
-# fixme - this function is now broken since we used dict for findvxrm
 def run_same_api():
     vxrails = findvxrm()
-    selected_api = api_list(vxrails[0])
+    selected_api = api_list(next(iter(
+        vxrails)))  # we need just to pass an IP to api_list to construct the selection list for the available API's
 
     try:
 
@@ -299,9 +299,7 @@ def cluster_shutdown(ip):
     call = None
     api = 'cluster/shutdown'
     method = 'POST'
-    param = input('''Select Operation Type:
-    1 - Dry Run Only
-    2 - Cluster Shutdown\n''')
+    param = input('''Select Operation Type:\n1 - Dry Run Only\n2 - Cluster Shutdown\nType your Choice: ''')
     if param == '1':
         parameters = {"dryrun": "true"}
     else:
