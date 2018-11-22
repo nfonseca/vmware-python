@@ -18,8 +18,6 @@ import os
 import argparse
 import getpass
 import atexit
-import progressbar
-import time
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -399,12 +397,9 @@ main()
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
-# todo - Break Down all the API calls to small functions that are called by a main one. http://openbookproject.net/pybiblio/tips/wilson/dictionaryMenus.php
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - check power state of VxRM
 # todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# todo - Improve the logging on the run_same_api(). Add try except block and Exceptions
-# todo - The answer selection should be a list or dictionary in pi_list(ip) rather than print statements. Could reuse the values later to printout the API name in a Friendly way
