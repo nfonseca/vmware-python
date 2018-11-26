@@ -149,6 +149,7 @@ def api_list(ip):
         "Support Logs": '3',
         "Cluster Shutdown": '4',
         "LCM Upgrade": '5',
+        "Available Nodes": '6'
     }
 
     try:
@@ -190,6 +191,13 @@ def api_list(ip):
                 break
             elif ans == '5':
                 res = lcm_upgrade(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '6':
+                res = available_nodes(ip)
                 call = res[0]
                 api = res[1]
                 method = res[2]
@@ -333,6 +341,24 @@ def lcm_upgrade(ip):
     return call, api, method, parameters
 
 
+def available_nodes(ip):
+    call = None
+    api = 'clusters/available-nodes'
+    method = 'GET'
+    parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('Error in available_nodes(): ', err)
+
+    return call, api, method, parameters
+
+
+
+
+
 def main():
     global content
     global si
@@ -396,6 +422,8 @@ main()
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
+# todo - Add API GET /clusters/available-nodes
+# todo - Add API GET /support/heartbeat
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
