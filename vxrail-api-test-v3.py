@@ -36,7 +36,8 @@ def findvxrm():
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
 
         for vm in containerVM.view:
-            if vm.name == 'VxRail Manager':
+            if vm.name == 'VxRail Manager' and vm.summary.guest.ipAddress is not None:
+
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
 
