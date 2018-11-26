@@ -149,7 +149,10 @@ def api_list(ip):
         "Support Logs": '3',
         "Cluster Shutdown": '4',
         "LCM Upgrade": '5',
-        "Available Nodes": '6'
+        "Available Nodes": '6',
+        "VxRM Internet Mode": '7',
+        "VxRM Show Proxy Settings": '8',
+        "VxRM Get ESRS Heartbeat": '9'
     }
 
     try:
@@ -198,6 +201,27 @@ def api_list(ip):
                 break
             elif ans == '6':
                 res = available_nodes(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '7':
+                res = internet_mode(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '8':
+                res = get_system_proxy(ip)
+                call = res[0]
+                api = res[1]
+                method = res[2]
+                parameters = res[3]
+                break
+            elif ans == '9':
+                res = get_vxrail_heartbeat(ip)
                 call = res[0]
                 api = res[1]
                 method = res[2]
@@ -356,6 +380,49 @@ def available_nodes(ip):
     return call, api, method, parameters
 
 
+def internet_mode(ip):
+    call = None
+    api = 'system/internet-mode'
+    method = 'GET'
+    parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('internet_mode(): ', err)
+
+    return call, api, method, parameters
+
+
+def get_system_proxy(ip):
+    call = None
+    api = 'system/proxy'
+    method = 'GET'
+    parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('system_proxy(): ', err)
+
+    return call, api, method, parameters
+
+
+def get_vxrail_heartbeat(ip):
+    call = None
+    api = 'support/heartbeat'
+    method = 'GET'
+    parameters = None
+
+    try:
+        call = endpoint_url(ip, api)
+
+    except Exception  as err:
+        print('get_vxrail_heartbeat(): ', err)
+
+    return call, api, method, parameters
 
 
 
@@ -422,11 +489,10 @@ main()
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
-# todo - Add API GET /clusters/available-nodes
-# todo - Add API GET /support/heartbeat
+# todo - Add to each API a description of what they actually do
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - check power state of VxRM
-# todo - Treat exceptions when VXRM have no IP. Ideally IP should come from vSphere
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
+# todo - Add logging
