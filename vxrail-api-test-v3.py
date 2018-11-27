@@ -85,16 +85,11 @@ def call_api(url, method):
 
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     headers = {'Content-type': 'application/json'}
-    print(url)
-    print(type(url))
-    print(method)
-    print(type(method))
+
 
     try:
 
-        print(parameters)
         # parameters is type dictionary !!!! issue may be here
-        print(type(parameters))
         response = requests.request(method, url,
                                     verify=False,
                                     headers=headers,
@@ -133,7 +128,7 @@ def call_api(url, method):
 
 
     except Exception  as err:
-        print('Error in call_api(): ', err)
+        print('Error in call_api(): ', err, response.text)
 
 
 # function to deal with all the different APIs for VXRM
@@ -378,8 +373,6 @@ def lcm_upgrade(ip):
                           "vcenter": {
                               "vc_admin_user": {"username": "administrator@vsphere.local", "password": vc_admin_pwd}}}
             call = endpoint_url(ip, api)
-            print(call)
-            print(parameters)
 
         else:
             print('Cancelling Upgrade ...\n')
