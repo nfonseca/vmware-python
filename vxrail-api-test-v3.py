@@ -349,26 +349,31 @@ def cluster_shutdown(ip):
 
 def lcm_upgrade(ip):
     call = None
+    parameters = None
     api = 'lcm/upgrade'
     method = 'POST'
-    parameters = {"bundle_file_locator": "/data/store2/VXRAIL_COMPOSITE-4.7.100-10665885_for_4.7.x.zip",
-                  "vxrail": {"vxm_root_user": {"username": "root", "password": "VxR@il1!"}},
-                  "vcenter": {
-                      "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
+
 
     try:
-        go = input('''Verify that the follwoing requirements are met:
-        1 - Upgrade Bundle Copied to VxRail Manager to Folder /data/store2
-        2 - Have user account details for vxrail root user / vCenter admin
+        go = input('''Verify that the following requirements are met: \n
+        1 - Upgrade bundle copied to VxRail Manager to folder /data/store2
+        2 - Have user account details for vxrail root user / vCenter administrator
         
-        Proceed: Y or N:''')
+        Type Y to Continue or N to Cancel:''')
 
         if go == 'Y':
-            print('Upgrade via API starting ...')
+            print('Upgrade via API starting Now ...')
+            bundle_name = input('Type the Filename of the Upgrade Bundle: ')
+            vxrm_root_pwd = input('Type VxRail Manager root password: ')
+            vc_admin_pwd = input('Type vCenter Admin password: ')
+            parameters = {"bundle_file_locator": bundle_name,
+                          "vxrail": {"vxm_root_user": {"username": "root", "password": vxrm_root_pwd}},
+                          "vcenter": {
+                              "vc_admin_user": {"username": "administrator@vsphere.local", "password": vc_admin_pwd}}}
             call = endpoint_url(ip, api)
 
         else:
-            print('Come back later ...')
+            print('Cancelling Upgrade ...\n')
 
     except Exception  as err:
         print('Error in lcm_upgrade(): ', err)
