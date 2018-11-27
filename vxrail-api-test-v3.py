@@ -357,7 +357,18 @@ def lcm_upgrade(ip):
                       "vc_admin_user": {"username": "administrator@vsphere.local", "password": "VxR@il1!"}}}
 
     try:
-        call = endpoint_url(ip, api)
+        go = input('''Verify that the follwoing requirements are met:
+        1 - Upgrade Bundle Copied to VxRail Manager to Folder /data/store2
+        2 - Have user account details for vxrail root user / vCenter admin
+        
+        Proceed: Y or N:''')
+
+        if go == 'Y':
+            print('Upgrade via API starting ...')
+            call = endpoint_url(ip, api)
+
+        else:
+            print('Come back later ...')
 
     except Exception  as err:
         print('Error in lcm_upgrade(): ', err)
@@ -490,6 +501,7 @@ main()
 
 # todo - Add support for more APIs
 # todo - Add to each API a description of what they actually do
+# todo - Improve Upgrade function: Add text saying that you need to copy the bundle to vxrm and prompt passwords etc
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
