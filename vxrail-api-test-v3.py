@@ -373,10 +373,10 @@ def lcm_upgrade(ip):
             bundle_name = input('Type the Filename of the Upgrade Bundle: ')
             vxrm_root_pwd = input('Type VxRail Manager root password: ')
             vc_admin_pwd = input('Type vCenter Admin password: ')
-            parameters = {"bundle_file_locator": bundle_name,
+            parameters = {{"bundle_file_locator": bundle_name,
                           "vxrail": {"vxm_root_user": {"username": "root", "password": vxrm_root_pwd}},
                           "vcenter": {
-                              "vc_admin_user": {"username": "administrator@vsphere.local", "password": vc_admin_pwd}}}
+                              "vc_admin_user": {"username": "administrator@vsphere.local", "password": vc_admin_pwd}}}}
             call = endpoint_url(ip, api)
             print(call)
             print(parameters)
