@@ -85,9 +85,12 @@ def call_api(url, method):
 
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     headers = {'Content-type': 'application/json'}
+    print(url)
+    print(method)
 
     try:
 
+        print(parameters)
         response = requests.request(method, url,
                                     verify=False,
                                     headers=headers,
@@ -349,9 +352,9 @@ def cluster_shutdown(ip):
 
 def lcm_upgrade(ip):
     call = None
-    parameters = None
     api = 'lcm/upgrade'
     method = 'POST'
+    parameters = None
 
 
     try:
@@ -371,6 +374,8 @@ def lcm_upgrade(ip):
                           "vcenter": {
                               "vc_admin_user": {"username": "administrator@vsphere.local", "password": vc_admin_pwd}}}
             call = endpoint_url(ip, api)
+            print(call)
+            print(parameters)
 
         else:
             print('Cancelling Upgrade ...\n')
