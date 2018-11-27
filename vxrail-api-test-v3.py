@@ -86,11 +86,15 @@ def call_api(url, method):
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     headers = {'Content-type': 'application/json'}
     print(url)
+    print(type(url))
     print(method)
+    print(type(method))
 
     try:
 
         print(parameters)
+        # parameters is type dictionary !!!! issue may be here
+        print(type(parameters))
         response = requests.request(method, url,
                                     verify=False,
                                     headers=headers,
