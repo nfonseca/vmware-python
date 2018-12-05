@@ -445,6 +445,11 @@ def get_vxrail_heartbeat(ip):
 
 
 def copy_bundle(vxrail_ip):
+    # Define progress callback that prints the current percentage completed for the file
+    def progress(filename, size, sent):
+        sys.stdout.buffer.write(b"%s\'s progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
+
+
     bundle = input('Type the location of the Upgrade Bundle on your local machine')
     vxrm_location = '/tmp'
 
@@ -454,7 +459,7 @@ def copy_bundle(vxrail_ip):
     ssh.connect(vxrail_ip, username='mystic', password='VxRailManager@201602!')
 
     # SCPCLient takes a paramiko transport as an argument
-    scp = SCPClient(ssh.get_transport())
+    scp = SCPClient(ssh.get_transport(), progress=progress)
 
     # Uploading
     scp.put(bundle, recursive=False, remote_path=vxrm_location)
