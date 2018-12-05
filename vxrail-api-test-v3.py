@@ -18,6 +18,9 @@ import os
 import argparse
 import getpass
 import atexit
+import logging
+from scp import SCPClient
+import paramiko
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -37,7 +40,6 @@ def findvxrm():
 
         for vm in containerVM.view:
             if vm.name == 'VxRail Manager' and vm.summary.guest.ipAddress is not None:
-
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
 
@@ -85,7 +87,6 @@ def call_api(url, method):
 
     creds = ('administrator@vsphere.local', 'VxR@il1!')
     headers = {'Content-type': 'application/json'}
-
 
     try:
 
@@ -355,16 +356,16 @@ def lcm_upgrade(ip):
     method = 'POST'
     parameters = None
 
-
     try:
         go = input('''Verify that the following requirements are met: \n
         1 - Upgrade bundle copied to VxRail Manager to folder /data/store2
         2 - Have user account details for vxrail root user / vCenter administrator
-        
+
         Type Y to Continue or N to Cancel:''')
 
         if go == 'Y':
             print('Upgrade via API starting Now ...')
+            copy_bundle(ip)
             bundle_name = input('Type the Full Path and Filename of the Upgrade Bundle: ')
             vxrm_root_pwd = input('Type VxRail Manager root password: ')
             vc_admin_pwd = input('Type vCenter Admin password: ')
@@ -443,6 +444,25 @@ def get_vxrail_heartbeat(ip):
     return call, api, method, parameters
 
 
+def copy_bundle(vxrail_ip):
+    bundle = input('Type the location of the Upgrade Bundle on your local machine')
+    vxrm_location = '/tmp'
+
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.load_system_host_keys()
+    ssh.connect(vxrail_ip, username='mystic', password='VxRailManager@201602!')
+
+    # SCPCLient takes a paramiko transport as an argument
+    scp = SCPClient(ssh.get_transport())
+
+    # Uploading
+    scp.put(bundle, recursive=False, remote_path=vxrm_location)
+
+    scp.close()
+
+    return None
+
 
 def main():
     global content
@@ -514,4 +534,5 @@ main()
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - check power state of VxRM
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# todo - Add logging
+# todo - Add logging using logging module
+# todo - Make the code portable
