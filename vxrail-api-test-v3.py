@@ -358,14 +358,14 @@ def lcm_upgrade(ip):
 
     try:
         go = input('''Verify that the following requirements are met: \n
-        1 - Upgrade bundle copied to VxRail Manager to folder /data/store2
-        2 - Have user account details for vxrail root user / vCenter administrator
+        1 - Have user account details for vxrail root user / vCenter administrator
 
         Type Y to Continue or N to Cancel:''')
 
         if go == 'Y':
             print('Upgrade via API starting Now ...')
             copy_bundle(ip)
+            print('\n')
             bundle_name = input('Type the Full Path and Filename of the Upgrade Bundle: ')
             vxrm_root_pwd = input('Type VxRail Manager root password: ')
             vc_admin_pwd = input('Type vCenter Admin password: ')
@@ -445,26 +445,30 @@ def get_vxrail_heartbeat(ip):
 
 
 def copy_bundle(vxrail_ip):
-    # Define progress callback that prints the current percentage completed for the file
-    def progress(filename, size, sent):
-        sys.stdout.buffer.write(b"%s\'s progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
-
-
-    bundle = input('Type the location of the Upgrade Bundle on your local machine')
     vxrm_location = '/tmp'
 
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.load_system_host_keys()
-    ssh.connect(vxrail_ip, username='mystic', password='VxRailManager@201602!')
+    try:
 
-    # SCPCLient takes a paramiko transport as an argument
-    scp = SCPClient(ssh.get_transport(), progress=progress)
+        # Define progress callback that prints the current percentage completed for the file
+        def progress(filename, size, sent):
+            sys.stdout.buffer.write(b"%s\'s progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
 
-    # Uploading
-    scp.put(bundle, recursive=False, remote_path=vxrm_location)
+        bundle = input('Type the location of the Upgrade Bundle on your local machine')
 
-    scp.close()
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.load_system_host_keys()
+        ssh.connect(vxrail_ip, username='mystic', password='VxRailManager@201602!')
+
+        # SCPCLient takes a paramiko transport as an argument
+        scp = SCPClient(ssh.get_transport(), progress=progress)
+
+        # Uploading
+        scp.put(bundle, recursive=False, remote_path=vxrm_location)
+
+        scp.close()
+    except Exception  as err:
+        print('copy_bundle(): ', err)
 
     return None
 
@@ -533,7 +537,6 @@ main()
 
 # todo - Add support for more APIs
 # todo - Add to each API a description of what they actually do
-# todo - Improve Upgrade function: Add text saying that you need to copy the bundle to vxrm and prompt passwords etc
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
@@ -541,3 +544,5 @@ main()
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add logging using logging module
 # todo - Make the code portable
+# todo - Avoid duplication on the directory of the upgrade bundle. We already know where to put it so no need to ask user ...
+# todo - Mask inputs for passwords and users on the upgrade api bundle
