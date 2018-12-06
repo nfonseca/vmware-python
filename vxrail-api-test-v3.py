@@ -366,9 +366,10 @@ def lcm_upgrade(ip):
             print('Upgrade via API starting Now ...')
             copy_bundle(ip)
             print('\n')
-            bundle_name = input('Type the Full Path and Filename of the Upgrade Bundle: ')
-            vxrm_root_pwd = input('Type VxRail Manager root password: ')
-            vc_admin_pwd = input('Type vCenter Admin password: ')
+            bundle_name = '/tmp/' + bundle_filename
+            print(bundle_name)
+            vxrm_root_pwd = getpass.getpass(prompt='VxRail root Password: ')
+            vc_admin_pwd = getpass.getpass(prompt='vCenter Admin Password: ')
             parameters = {"bundle_file_locator": bundle_name,
                           "vxrail": {"vxm_root_user": {"username": "root", "password": vxrm_root_pwd}},
                           "vcenter": {
@@ -446,6 +447,7 @@ def get_vxrail_heartbeat(ip):
 
 def copy_bundle(vxrail_ip):
     vxrm_location = '/tmp'
+    global bundle_filename
 
     try:
 
@@ -454,6 +456,7 @@ def copy_bundle(vxrail_ip):
             sys.stdout.buffer.write(b"%s\'s progress: %.2f%%   \r" % (filename, float(sent) / float(size) * 100))
 
         bundle = input('Type the location of the Upgrade Bundle on your local machine')
+        bundle_filename = os.path.basename(bundle)
 
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -465,6 +468,9 @@ def copy_bundle(vxrail_ip):
 
         # Uploading
         scp.put(bundle, recursive=False, remote_path=vxrm_location)
+        # We need to set the permissions to 777 as the API runs with tcserver.pivotal
+        stdin, stdout, stderr = ssh.exec_command('chmod 777 ' + vxrm_location + '/' + bundle_filename)
+
 
         scp.close()
     except Exception  as err:
@@ -544,5 +550,3 @@ main()
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add logging using logging module
 # todo - Make the code portable
-# todo - Avoid duplication on the directory of the upgrade bundle. We already know where to put it so no need to ask user ...
-# todo - Mask inputs for passwords and users on the upgrade api bundle
