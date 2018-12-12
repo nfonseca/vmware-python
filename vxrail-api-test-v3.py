@@ -546,7 +546,7 @@ main()
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - check power state of VxRM
+# todo - check power state of VxRM. Not really needed
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add logging using logging module
 # todo - Make the code portable
