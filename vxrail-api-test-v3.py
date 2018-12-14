@@ -538,15 +538,17 @@ def main():
 
 main()
 
-# Things to improve/implement
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
-# todo - Add to each API a description of what they actually do
+
+# todo - Make the code portable. Need to use pyinstaller or cx_Freeze. The code needs to be frozen on the target platform
+# So need to deploy a Suse VM and make the port from there
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
 # todo - check power state of VxRM. Not really needed
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add logging using logging module
-# todo - Make the code portable
+# todo - Add to each API a description of what they actually do
+
