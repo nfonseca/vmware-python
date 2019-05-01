@@ -40,7 +40,7 @@ def findvxrm():
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
 
         for vm in containerVM.view:
-            if re.match("VxRail Manager", vm.name) and vm.summary.guest.ipAddress is not None:
+            if re.match("VxRail Manager", vm.name, flags=re.IGNORECASE) and vm.summary.guest.ipAddress is not None:
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
 
@@ -84,6 +84,7 @@ def endpoint_url(ip, api):
 # below function just needs to execute the API call and pass the parameters
 
 def call_api(url, method):
+
     args = GetArgs()
 
     auth = vars(args)
@@ -245,15 +246,6 @@ def api_list(ip):
         print('Error in api_list(): ', err)
 
     return call, api, method
-
-
-# helper function to upload upgrade composite bundle to VxRM
-def transfer_bundle(vxrmip=None, file=None, dest='/data/store2'):
-    if platform.system() == 'Windows':
-        p = subprocess.Popen(['pscp', 'C:\file.txt', 'mystic@172.168.10.150:/tmp'])
-        sts = os.waitpid(p.pid, 0)
-
-    return None
 
 
 def GetArgs():
@@ -550,10 +542,3 @@ main()
 # todo - Add to each API a description of what they actually do
 
 # MINOR FEATURES
-# todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - check power state of VxRM
-# todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
-# todo - Add logging using logging module
-# todo - Make the code portable
-# todo - Avoid duplication on the directory of the upgrade bundle. We already know where to put it so no need to ask user ...
-# todo - Mask inputs for passwords and users on the upgrade api bundle
