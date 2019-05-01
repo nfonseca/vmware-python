@@ -21,6 +21,7 @@ import atexit
 import logging
 from scp import SCPClient
 import paramiko
+import re
 
 # disable warnings from SSL Check
 if not sys.warnoptions:
@@ -39,7 +40,7 @@ def findvxrm():
         containerVM = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
 
         for vm in containerVM.view:
-            if vm.name == 'VxRail Manager' and vm.summary.guest.ipAddress is not None:
+            if re.match("VxRail Manager", vm.name) and vm.summary.guest.ipAddress is not None:
                 vxrmIPs.append(vm.summary.guest.ipAddress)
                 lenvxrmIPs = len(vxrmIPs)
 
@@ -85,7 +86,7 @@ def endpoint_url(ip, api):
 def call_api(url, method):
     # common to all requests
 
-    creds = ('administrator@vsphere.local', 'VxR@il1!')
+    creds = ('administrator@vsphere.local', 'VMware123$')
     headers = {'Content-type': 'application/json'}
 
     try:
@@ -468,7 +469,6 @@ def copy_bundle(vxrail_ip):
 
         # Uploading
         scp.put(bundle, recursive=False, remote_path=vxrm_location)
-        # We need to set the permissions to 777 as the API runs with tcserver.pivotal
         stdin, stdout, stderr = ssh.exec_command('chmod 777 ' + vxrm_location + '/' + bundle_filename)
 
 
@@ -538,17 +538,17 @@ def main():
 
 main()
 
+# Things to improve/implement
 # MAJOR FEATURES
 
 # todo - Add support for more APIs
-
-# todo - Make the code portable. Need to use pyinstaller or cx_Freeze. The code needs to be frozen on the target platform
-# So need to deploy a Suse VM and make the port from there
+# todo - Add to each API a description of what they actually do
 
 # MINOR FEATURES
 # todo - add a function to upload the logs from the VM where the scrip is executed. graphical interface would be fantastic
-# todo - check power state of VxRM. Not really needed
+# todo - check power state of VxRM
 # todo - Get VxRail version Info from VC (4.5 vs 4.7) and Cluster Name. Couldn't find that info in the lab
 # todo - Add logging using logging module
-# todo - Add to each API a description of what they actually do
-
+# todo - Make the code portable
+# todo - Avoid duplication on the directory of the upgrade bundle. We already know where to put it so no need to ask user ...
+# todo - Mask inputs for passwords and users on the upgrade api bundle
