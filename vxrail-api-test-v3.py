@@ -84,9 +84,13 @@ def endpoint_url(ip, api):
 # below function just needs to execute the API call and pass the parameters
 
 def call_api(url, method):
+    args = GetArgs()
+
+    auth = vars(args)
+
     # common to all requests
 
-    creds = ('administrator@vsphere.local', 'VMware123$')
+    creds = (auth['user'], auth['password'])
     headers = {'Content-type': 'application/json'}
 
     try:
@@ -484,6 +488,7 @@ def main():
     global si
 
     args = GetArgs()
+
     if args.password:
         password = args.password
     else:
